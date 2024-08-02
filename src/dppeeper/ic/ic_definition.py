@@ -16,6 +16,7 @@ class ICDefinition:
     f_pins: list[int]
 
     adapter_hi_pins: list[int]
+    hw_model: int
     adapter_notes: str | None = None
 
     @staticmethod
@@ -29,7 +30,7 @@ class ICDefinition:
 
     def __init__(self,
                  name: str, 
-                 type: ICPackageType, 
+                 package: ICPackageType, 
                  zif_map: list[int],
                  clk_pins: list[int],
                  in_pins: list[int],
@@ -37,10 +38,12 @@ class ICDefinition:
                  o_pins: list[int],
                  f_pins: list[int],
                  adapter_hi_pins: list[int],
+                 hw_model: int,
                  adapter_notes: str | None = None):
         
         self.name = name
-        self.type = type
+        self.package = package
+        self.hw_model = hw_model
         self.adapter_notes = adapter_notes
         self.adapter_hi_pins = adapter_hi_pins
 
