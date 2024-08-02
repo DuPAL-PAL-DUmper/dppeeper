@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dppeeper"
+version = "0.0.1"
+description = "Tool to manually analyze ICs with the dupico"
+authors = [
+   { name = "Fabio Battaglia", email = "hkzlabnet@gmail.com" }
+]
+keywords = ["dupico", "DuPAL", "analyze"]
+readme = "README.md"
+license = { text = "CC BY-SA 4.0 DEED" }
+classifiers = [
+    "Programming Language :: Python :: 3"
+]
+requires-python = ">=3.12"
+dependencies = [
+    "pyserial ~= 3.5",
+    "dupicolib ~= 0.2.0"
+]
+
+[project.scripts]
+dppeeper = 'dppeeper.frontend:cli'
+
+[tool.setuptools]
+py-modules = [ "__init__" ]
+
+[project.urls]
+repository = "https://github.com/DuPAL-PAL-DUmper/dppeeper"
