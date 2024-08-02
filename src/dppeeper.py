@@ -2,6 +2,7 @@
 
 import sys
 
+import dppeeper.frontend
+
 if __name__ == '__main__':
-    #sys.exit(dpdumper.frontend.cli())
-    sys.exit(1)
+    sys.exit(dppeeper.frontend.cli())
