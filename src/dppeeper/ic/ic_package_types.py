@@ -2,7 +2,7 @@
 
 from enum import Enum
 
-class PackageType(Enum):
+class ICPackageType(Enum):
     SIP = 'SIP'
     DIP = 'DIP'
     QUAD = 'QUAD'

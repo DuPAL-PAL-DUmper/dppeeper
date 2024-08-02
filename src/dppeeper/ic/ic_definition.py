@@ -2,12 +2,12 @@
 
 from typing import final
 
-from dppeeper.ic.package_types import PackageType
+from dppeeper.ic.ic_package_types import ICPackageType
 
 @final
 class ICDefinition:
     name: str
-    package: PackageType
+    package: ICPackageType
 
     clk_pins: list[int]
     in_pins: list[int]
@@ -29,7 +29,7 @@ class ICDefinition:
 
     def __init__(self,
                  name: str, 
-                 type: PackageType, 
+                 type: ICPackageType, 
                  zif_map: list[int],
                  clk_pins: list[int],
                  in_pins: list[int],
