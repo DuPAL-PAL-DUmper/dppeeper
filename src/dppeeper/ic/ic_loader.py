@@ -13,6 +13,7 @@ class ICLoader:
     _KEY_PACKAGE: str = 'package'
     _KEY_PINOUT: str = 'pinout'
     _KEY_PINOUT_ZIFMAP:str = 'ZIF_map'
+    _KEY_PINOUT_NAMES:str = 'names'
     _KEY_PINOUT_CLKP:str = 'clk_pins'
     _KEY_PINOUT_INP:str = 'in_pins'
     _KEY_PINOUT_IOP: str = 'io_pins'
@@ -33,6 +34,7 @@ class ICLoader:
         return ICDefinition(name=toml_data[cls._KEY_NAME],
                                 package=ic_package,
                                 zif_map=toml_data[cls._KEY_PINOUT][cls._KEY_PINOUT_ZIFMAP],
+                                pin_names=toml_data[cls._KEY_PINOUT][cls._KEY_PINOUT_NAMES],
                                 clk_pins=toml_data[cls._KEY_PINOUT][cls._KEY_PINOUT_CLKP],
                                 in_pins=toml_data[cls._KEY_PINOUT][cls._KEY_PINOUT_INP],
                                 io_pins=toml_data[cls._KEY_PINOUT][cls._KEY_PINOUT_IOP],

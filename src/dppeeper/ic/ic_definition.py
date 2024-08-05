@@ -9,6 +9,7 @@ class ICDefinition:
     name: str
     package: ICPackageType
 
+    pin_names: list[str]
     clk_pins: list[int]
     in_pins: list[int]
     io_pins: list[int]
@@ -32,6 +33,7 @@ class ICDefinition:
                  name: str, 
                  package: ICPackageType, 
                  zif_map: list[int],
+                 pin_names: list[str],
                  clk_pins: list[int],
                  in_pins: list[int],
                  io_pins: list[int],
