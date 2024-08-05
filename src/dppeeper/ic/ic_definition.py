@@ -2,12 +2,12 @@
 
 from typing import final
 
-from dppeeper.ic.ic_package_types import ICPackageType
-
 @final
 class ICDefinition:
+    _SUPPORTED_NUM_SIDES: list[int] = [1, 2, 4]
+
     name: str
-    package: ICPackageType
+    pins_per_side: list[int]
 
     pin_names: list[str]
     clk_pins: list[int]
@@ -31,7 +31,7 @@ class ICDefinition:
 
     def __init__(self,
                  name: str, 
-                 package: ICPackageType, 
+                 pins_per_side: list[int], 
                  zif_map: list[int],
                  pin_names: list[str],
                  clk_pins: list[int],
@@ -44,10 +44,18 @@ class ICDefinition:
                  adapter_notes: str | None = None):
         
         self.name = name
-        self.package = package
+        self.pins_per_side = pins_per_side
+        self.pin_names = pin_names
         self.hw_model = hw_model
         self.adapter_notes = adapter_notes
         self.adapter_hi_pins = adapter_hi_pins
+
+        # Check the package
+        tot_pins: int = sum(self.pins_per_side)
+        if tot_pins != len(self.pin_names):
+            raise ValueError(f'Number of pins in name list {len(self.pin_names)} does not match pins in package ({tot_pins})')
+        if len(self.pins_per_side) not in self._SUPPORTED_NUM_SIDES:
+            raise ValueError(f'Number of sides {len(self.pins_per_side)} is not supported.')
 
         # Remap pins on the ZIF socket
         self.clk_pins = self._remap_pin_array(zif_map, clk_pins)
