@@ -3,7 +3,10 @@
 # pylint: disable=wrong-import-position
 
 import sys
-sys.path.insert(1, '.') # Make VSCode happy...
+sys.path.insert(1, './src') # Make VSCode happy...
+
+from dppeeper.ic.ic_definition import ICDefinition
+from dppeeper.ic.ic_loader import ICLoader
 
 import pytest
 
@@ -23,3 +26,8 @@ def pin_list_io_16L8() -> list[int]:
 @pytest.fixture
 def pin_list_o_16L8() -> list[int]:
     return [12, 19]
+
+@pytest.fixture
+def ic_definition_PAL16L8() -> ICDefinition:
+    with open('example_definitions/PAL16L8.toml', 'rb') as def_file:    
+        return ICLoader.extract_definition_from_buffered_reader(def_file)
