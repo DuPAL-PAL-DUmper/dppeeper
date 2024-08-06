@@ -1,8 +1,16 @@
-from enum import Enum
-import logging
+"""Frontend module"""
+
 import argparse
+import traceback
+import logging
+
+from enum import Enum
+
+import serial
 
 from dppeeper import __name__, __version__
+
+from dppeeper.peeper_utilities import PeeperUtilities
 
 MIN_SUPPORTED_MODEL: int = 3
 
@@ -77,5 +85,30 @@ def cli() -> int:
     elif args.verbose > 0:
         debug_level = logging.INFO
     logging.basicConfig(level=debug_level)
+
+    if not args.port:
+        PeeperUtilities.print_serial_ports()      
+        return 1
+    else:
+        ser_port: serial.Serial | None = None
+
+        try:
+            _LOGGER.debug(f'Trying to open serial port {args.port}')
+            ser_port = serial.Serial(port = args.port,
+                                     baudrate=args.baudrate,
+                                     bytesize = 8,
+                                     stopbits = 1,
+                                     parity = 'N',
+                                     timeout = 5.0)
+        except Exception as ex:
+            _LOGGER.critical(traceback.format_exc())
+            return -1
+
+        finally:
+            if ser_port and not ser_port.closed:
+                _LOGGER.debug('Closing the serial port.')
+                ser_port.close()
+
+        _LOGGER.info('Quitting.')          
 
     return 0
