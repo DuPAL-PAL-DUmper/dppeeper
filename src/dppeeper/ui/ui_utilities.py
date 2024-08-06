@@ -12,7 +12,7 @@ class UIUtilities:
             case 1:
                 return (4, ic.pins_per_side[0] + 2)
             case 2:
-                return (7, max(ic.pins_per_side) + 2)
+                return (8, max(ic.pins_per_side) + 2)
             case 3:
                 top_bottom: list[int] = [val for (idx, val) in enumerate(ic.pins_per_side) if (idx % 2) == 0]
                 left_right: list[int] = [val for (idx, val) in enumerate(ic.pins_per_side) if (idx % 2) == 1]

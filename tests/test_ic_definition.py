@@ -23,3 +23,4 @@ def test_PAL16L8_Definition(ic_definition_PAL16L8):
     assert ic_definition_PAL16L8.o_pins == [32, 39]
     assert ic_definition_PAL16L8.io_pins == [33, 34, 35, 36, 37, 38]
     assert ic_definition_PAL16L8.clk_pins == []
+    assert ic_definition_PAL16L8.hw_model == 3
