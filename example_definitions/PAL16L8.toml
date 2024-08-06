@@ -1,16 +1,15 @@
 # Example of a definition for a PAL16L8
 
 name = "PAL16L8"
-package = "DIP" # Valid are SIP, DIP, and QUAD
 
 [pinout]
+# Defines both package structure and number of pins for each side
+pins_per_side = [10, 10]
+
 # List of all the pins of the IC, from 1 onward, as mapped on the ZIF42 socket of the dupico
 # note that, in this list, 21 is a placeholder for GND, 42 a placeholder for a power source (which could be 5V or different).
 # These are used to properly draw the map on the interface
 ZIF_map = [3, 4, 5, 6, 7, 8, 9, 10, 11, 21, 31, 32, 33, 34, 35, 36, 37, 38, 39, 42]
-
-# A string to associate to every pin
-names = ["I1", "I2", "I3", "I4", "I5", "I6", "I7", "I8", "I9", "GND", "I11", "O12", "IO13", "IO14", "IO15", "IO16", "IO17", "IO18", "O19", "VCC"]
 
 # List of the pins, as numbered on the IC, that can be used as clock inputs
 clk_pins = []

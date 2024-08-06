@@ -27,13 +27,31 @@ class ICDefinition:
         for pin in pins:
             remapped.append(zif_map[pin - 1]) # Remember that pin numbering is 1-based
 
-        return remapped       
+        return remapped
+
+    @staticmethod
+    def _build_pin_names(zif_map: list[int], in_pins: list[int], io_pins: list[int], o_pins: list[int], clk_pins: list[int]) -> list[str]:
+        pin_names: list[str] = [('P' if pin == 42 else ('G' if pin == 21 else '')) for pin in zif_map]
+
+        for pin in in_pins:
+            pin_names[pin-1] = f'I{pin}'
+
+        for pin in o_pins:
+            pin_names[pin-1] = f'O{pin}'
+        
+        for pin in io_pins:
+            pin_names[pin-1] = f'IO{pin}'
+        
+        for pin in clk_pins:
+            if len(pin_names[pin-1]) > 0:
+                pin_names[pin-1] = pin_names[pin-1] + '/CLK'
+
+        return pin_names
 
     def __init__(self,
                  name: str, 
                  pins_per_side: list[int], 
                  zif_map: list[int],
-                 pin_names: list[str],
                  clk_pins: list[int],
                  in_pins: list[int],
                  io_pins: list[int],
@@ -45,10 +63,11 @@ class ICDefinition:
         
         self.name = name
         self.pins_per_side = pins_per_side
-        self.pin_names = pin_names
         self.hw_model = hw_model
         self.adapter_notes = adapter_notes
         self.adapter_hi_pins = adapter_hi_pins
+
+        self.pin_names = self._build_pin_names(zif_map, in_pins, io_pins, o_pins, clk_pins)
 
         # Check the package
         tot_pins: int = sum(self.pins_per_side)
