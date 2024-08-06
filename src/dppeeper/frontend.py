@@ -8,9 +8,16 @@ from enum import Enum
 
 import serial
 
+from dupicolib.board_commands import BoardCommands
+from dupicolib.board_command_class_factory import BoardCommandClassFactory
+from dupicolib.board_utilities import BoardUtilities
+from dupicolib.board_fw_version import FwVersionTools, FWVersionDict
+
 from dppeeper import __name__, __version__
 
 from dppeeper.peeper_utilities import PeeperUtilities
+from dppeeper.ic.ic_definition import ICDefinition
+from dppeeper.ic.ic_loader import ICLoader
 
 MIN_SUPPORTED_MODEL: int = 3
 
@@ -93,22 +100,72 @@ def cli() -> int:
         ser_port: serial.Serial | None = None
 
         try:
-            _LOGGER.debug(f'Trying to open serial port {args.port}')
-            ser_port = serial.Serial(port = args.port,
-                                     baudrate=args.baudrate,
-                                     bytesize = 8,
-                                     stopbits = 1,
-                                     parity = 'N',
-                                     timeout = 5.0)
+            # Load and check IC definition requirements
+            ic_definition: ICDefinition
+            with open(args.definition, 'rb') as def_file:
+                ic_definition = ICLoader.extract_definition_from_buffered_reader(def_file)
+
+            match args.subcommand:
+                case Subcommands.SIM.value:
+                    sim_command(ic_definition)
+                case Subcommands.CONNECT.value:
+                    connect_command(args.port, args.baudrate, ic_definition)
+                case _:
+                    _LOGGER.critical(f'Unsupported command {args.subcommand}')
+
+
         except Exception as ex:
             _LOGGER.critical(traceback.format_exc())
             return -1
 
-        finally:
-            if ser_port and not ser_port.closed:
-                _LOGGER.debug('Closing the serial port.')
-                ser_port.close()
-
         _LOGGER.info('Quitting.')          
-
     return 0
+
+def sim_command(ic_definition: ICDefinition) -> None:
+    raise NotImplementedError('Simulation mode not currently implemented.')
+
+def connect_command(port_name: str, baudrate: int, ic_definition: ICDefinition) -> int:
+    ser_port: serial.Serial | None = None
+    
+    try:
+        _LOGGER.debug(f'Trying to open serial port {args.port}')
+        ser_port = serial.Serial(port = port_name,
+                                 baudrate=baudrate,
+                                 bytesize = 8,
+                                 stopbits = 1,
+                                 parity = 'N',
+                                 timeout = 5.0)
+            
+        if not BoardUtilities.initialize_connection(ser_port):
+            _LOGGER.critical('Serial port connected, but the board did not respond in time.')
+            return -1
+            
+        _LOGGER.info(f'Board connected @{port_name}, speed:{baudrate} ...')
+        model: int | None = BoardCommands.get_model(ser_port)
+        if model is None:
+            _LOGGER.critical('Unable to retrieve model number...')
+            return -1
+        elif model < MIN_SUPPORTED_MODEL:
+            _LOGGER.critical(f'Model {model} is not supported.')
+            return -1
+        else:
+            _LOGGER.info(f'Model {model} detected!')
+            
+        fw_version: str | None = BoardCommands.get_version(ser_port)
+        fw_version_dict: FWVersionDict
+        if fw_version is None:
+            _LOGGER.critical('Unable to retrieve firmware version...')
+            return -1
+        else:
+            fw_version_dict = FwVersionTools.parse(fw_version) # Check that the version is formatted correctly
+            _LOGGER.info(f'Firmware version on board is "{fw_version}"')
+
+        if ic_definition.hw_model > model:
+            raise ValueError(f'Current hardware model {model} does not satisfy requirement {ic_definition.hw_model}')
+
+        # Now we have enough information to obtain the class that handles commands specific for this board
+        command_class: BoardCommands = BoardCommandClassFactory.get_command_class(model, fw_version_dict)
+    finally:
+        if ser_port and not ser_port.closed:
+            _LOGGER.debug('Closing the serial port.')
+            ser_port.close()
