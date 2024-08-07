@@ -30,7 +30,7 @@ class Subcommands(Enum):
 def _build_argsparser() -> argparse.ArgumentParser:
     parser: argparse.ArgumentParser = argparse.ArgumentParser(
         prog=__name__,
-        description='A tool for visual analysis of PLDs'
+        description='A tool for interactive analysis of PLDs'
     )
    
     parser.add_argument('-v', '--verbose', action='count', default=0)
