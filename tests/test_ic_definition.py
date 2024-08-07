@@ -19,6 +19,7 @@ def test_16L8_pin_names(pin_list_zif_map_16L8, pin_list_in_16L8, pin_list_io_16L
 
 def test_PAL16L8_Definition(ic_definition_PAL16L8):
     assert len(ic_definition_PAL16L8.pin_names) == 20
+    assert len(ic_definition_PAL16L8.zif_map) == len(ic_definition_PAL16L8.pin_names)
     assert ic_definition_PAL16L8.in_pins == [3, 4, 5, 6, 7, 8, 9, 10, 11, 31]
     assert ic_definition_PAL16L8.o_pins == [32, 39]
     assert ic_definition_PAL16L8.io_pins == [33, 34, 35, 36, 37, 38]

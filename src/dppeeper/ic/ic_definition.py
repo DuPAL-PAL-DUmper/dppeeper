@@ -66,7 +66,7 @@ class ICDefinition:
         
         self.name = name
         self.pins_per_side = pins_per_side
-        self.ZIF_map = zif_map
+        self.zif_map = zif_map
         self.hw_model = hw_model
         self.adapter_notes = adapter_notes
         self.adapter_hi_pins = adapter_hi_pins

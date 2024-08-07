@@ -29,5 +29,5 @@ def pin_list_o_16L8() -> list[int]:
 
 @pytest.fixture
 def ic_definition_PAL16L8() -> ICDefinition:
-    with open('example_definitions/PAL16L8.toml', 'rb') as def_file:    
+    with open('example/PAL16L8.toml', 'rb') as def_file:    
         return ICLoader.extract_definition_from_buffered_reader(def_file)
