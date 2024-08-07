@@ -128,7 +128,7 @@ def connect_command(port_name: str, baudrate: int, ic_definition: ICDefinition) 
     ser_port: serial.Serial | None = None
     
     try:
-        _LOGGER.debug(f'Trying to open serial port {args.port}')
+        _LOGGER.debug(f'Trying to open serial port {port_name}')
         ser_port = serial.Serial(port = port_name,
                                  baudrate=baudrate,
                                  bytesize = 8,
