@@ -25,7 +25,7 @@ _LOGGER: logging.Logger = logging.getLogger(__name__)
 
 class Subcommands(Enum):
     SIM = 'sim'
-    CONNECT = 'connect'
+    DUPICO = 'dupico'
 
 def _build_argsparser() -> argparse.ArgumentParser:
     parser: argparse.ArgumentParser = argparse.ArgumentParser(
@@ -67,7 +67,7 @@ def _build_argsparser() -> argparse.ArgumentParser:
                             required=True,
                             help='File with recorded transitions for simulation purposes')
     
-    parser_conn = subparsers.add_parser(Subcommands.CONNECT.value, help='Read data the dupico board')
+    parser_conn = subparsers.add_parser(Subcommands.DUPICO.value, help='Read data the dupico board')
     parser_conn.add_argument('-p', '--port',
                         type=str,
                         nargs='?',
@@ -108,7 +108,7 @@ def cli() -> int:
             match args.subcommand:
                 case Subcommands.SIM.value:
                     sim_command(ic_definition)
-                case Subcommands.CONNECT.value:
+                case Subcommands.DUPICO.value:
                     connect_command(args.port, args.baudrate, ic_definition)
                 case _:
                     _LOGGER.critical(f'Unsupported command {args.subcommand}')
