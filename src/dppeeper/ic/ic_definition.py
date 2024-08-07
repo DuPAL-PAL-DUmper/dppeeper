@@ -8,8 +8,11 @@ class ICDefinition:
 
     name: str
     pins_per_side: list[int]
+    
+    zif_map: list[int]
 
     pin_names: list[str]
+
     clk_pins: list[int]
     in_pins: list[int]
     io_pins: list[int]
@@ -63,6 +66,7 @@ class ICDefinition:
         
         self.name = name
         self.pins_per_side = pins_per_side
+        self.ZIF_map = zif_map
         self.hw_model = hw_model
         self.adapter_notes = adapter_notes
         self.adapter_hi_pins = adapter_hi_pins
