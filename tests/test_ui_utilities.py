@@ -14,5 +14,6 @@ def test_DIP_Grid_calculation():
     assert UIUtilities.calculateGridSize([12]) == (4, 14)
     # DIP 20 pin IC (left and right pin count)
     assert UIUtilities.calculateGridSize([10, 10]) == (8, 12)
-    # QUAD 48 pin (Top 10 + Left 14 + Bottom 10 + Right 14)
-    assert UIUtilities.calculateGridSize([10, 14, 10, 14]) == (16, 20)
+    # QUAD 48 pin (Left 14 + Bottom 10 + Right 14 + Top 10)
+    assert UIUtilities.calculateGridSize([14, 10, 14, 10]) == (16, 20)
+    
