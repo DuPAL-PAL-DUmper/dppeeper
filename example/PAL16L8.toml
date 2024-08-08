@@ -3,7 +3,7 @@
 name = "PAL16L8"
 
 [pinout]
-# Defines both package structure and number of pins for each side
+# Defines both package structure and number of pins for each side. L, R, in order.
 pins_per_side = [10, 10]
 
 # List of all the pins of the IC, from 1 onward, as mapped on the ZIF42 socket of the dupico
