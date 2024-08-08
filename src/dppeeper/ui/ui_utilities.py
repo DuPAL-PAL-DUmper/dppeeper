@@ -23,20 +23,23 @@ class UIUtilities:
     def calculatePinPosition(pin_no: int, isLabel: bool, pins_per_side: list[int]) -> Tuple[int, int]:
         grid_size: list[int] = UIUtilities.calculateGridSize(pins_per_side)
 
+        if pin_no < 1:
+            raise ValueError('Pin numbering begins at 1')
+
         if pin_no > sum(pins_per_side):
-            raise ValueError(f'Pin structure does not fit pin number {pin_no}')
+            raise ValueError(f'Pin structure does not fit pin number {pin_no}. Max pin is {sum(pins_per_side)}.')
 
         match len(pins_per_side):
             case 1:
-                    return (1 + (0 if isLabel else 1), pin_no)
+                    return (1 + (1 if isLabel else 0), pin_no)
             case 2:
                 height: int = grid_size[1]
                     
                 if pin_no > pins_per_side[0]: # Right side
                     pos: int = (height - 1) - (pin_no - pins_per_side[0]) 
-                    return (5 + (1 if isLabel else 0), pos)
+                    return (5 + (0 if isLabel else 1), pos)
                 else: # Left side
-                    return (2 - (1 if isLabel else 0), pin_no)
+                    return (2 - (0 if isLabel else 1), pin_no)
             case 4:
                 if pin_no > pins_per_side[0] + pins_per_side[1] + pins_per_side[2]: # Top side
                     top_pin_no: int = pin_no - pins_per_side[0] - pins_per_side[1] - pins_per_side[2]
