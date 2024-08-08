@@ -45,6 +45,15 @@ def test_DIP_grid_position_calculation():
 
     assert e_info.value.args[0] == 'Pin structure does not fit pin number 21. Max pin is 20.'
 
-
-                                        
+def test_QUAD_grid_position_calculation():
+    # Left
+    assert UIUtilities.calculatePinPosition(pin_no = 1, isLabel = False, pins_per_side = [14, 10, 14, 10]) == (1, 3)
+    assert UIUtilities.calculatePinPosition(pin_no = 14, isLabel = False, pins_per_side = [14, 10, 14, 10]) == (1, 16)
+    assert UIUtilities.calculatePinPosition(pin_no = 1, isLabel = True, pins_per_side = [14, 10, 14, 10]) == (2, 3)
+    assert UIUtilities.calculatePinPosition(pin_no = 14, isLabel = True, pins_per_side = [14, 10, 14, 10]) == (2, 16)
     
+    # Right
+    assert UIUtilities.calculatePinPosition(pin_no = 25, isLabel = False, pins_per_side = [14, 10, 14, 10]) == (13, 16)
+    assert UIUtilities.calculatePinPosition(pin_no = 25, isLabel = True, pins_per_side = [14, 10, 14, 10]) == (14, 16)
+    assert UIUtilities.calculatePinPosition(pin_no = 38, isLabel = False, pins_per_side = [14, 10, 14, 10]) == (13, 3)
+    assert UIUtilities.calculatePinPosition(pin_no = 38, isLabel = True, pins_per_side = [14, 10, 14, 10]) == (14, 3)

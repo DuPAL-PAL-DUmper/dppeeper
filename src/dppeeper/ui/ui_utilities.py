@@ -51,4 +51,4 @@ class UIUtilities:
                     bottom_pin_no: int = pin_no - pins_per_side[0]
                     return (3 + bottom_pin_no, pins_per_side[0] + 2 + (1 if isLabel else 0))
                 else: # Left side
-                    return (1 + (0 if isLabel else 1), 3 + pin_no)
+                    return (2 - (0 if isLabel else 1), 2 + pin_no)
