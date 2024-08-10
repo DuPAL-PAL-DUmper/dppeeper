@@ -53,7 +53,19 @@ def test_QUAD_grid_position_calculation():
     assert UIUtilities.calculatePinPosition(pin_no = 14, isLabel = True, pins_per_side = [14, 10, 14, 10]) == (2, 16)
     
     # Right
-    assert UIUtilities.calculatePinPosition(pin_no = 25, isLabel = False, pins_per_side = [14, 10, 14, 10]) == (13, 16)
-    assert UIUtilities.calculatePinPosition(pin_no = 25, isLabel = True, pins_per_side = [14, 10, 14, 10]) == (14, 16)
-    assert UIUtilities.calculatePinPosition(pin_no = 38, isLabel = False, pins_per_side = [14, 10, 14, 10]) == (13, 3)
-    assert UIUtilities.calculatePinPosition(pin_no = 38, isLabel = True, pins_per_side = [14, 10, 14, 10]) == (14, 3)
+    assert UIUtilities.calculatePinPosition(pin_no = 25, isLabel = False, pins_per_side = [14, 10, 14, 10]) == (14, 16)
+    assert UIUtilities.calculatePinPosition(pin_no = 25, isLabel = True, pins_per_side = [14, 10, 14, 10]) == (13, 16)
+    assert UIUtilities.calculatePinPosition(pin_no = 38, isLabel = False, pins_per_side = [14, 10, 14, 10]) == (14, 3)
+    assert UIUtilities.calculatePinPosition(pin_no = 38, isLabel = True, pins_per_side = [14, 10, 14, 10]) == (13, 3)
+
+    # Bottom
+    assert UIUtilities.calculatePinPosition(pin_no = 15, isLabel = False, pins_per_side = [14, 10, 14, 10]) == (3, 18)
+    assert UIUtilities.calculatePinPosition(pin_no = 15, isLabel = True, pins_per_side = [14, 10, 14, 10]) == (3, 17)
+    assert UIUtilities.calculatePinPosition(pin_no = 24, isLabel = False, pins_per_side = [14, 10, 14, 10]) == (12, 18)
+    assert UIUtilities.calculatePinPosition(pin_no = 24, isLabel = True, pins_per_side = [14, 10, 14, 10]) == (12, 17)
+    
+    # Top
+    assert UIUtilities.calculatePinPosition(pin_no = 39, isLabel = False, pins_per_side = [14, 10, 14, 10]) == (12, 1)
+    assert UIUtilities.calculatePinPosition(pin_no = 39, isLabel = True, pins_per_side = [14, 10, 14, 10]) == (12, 2)
+    assert UIUtilities.calculatePinPosition(pin_no = 48, isLabel = False, pins_per_side = [14, 10, 14, 10]) == (3, 1)
+    assert UIUtilities.calculatePinPosition(pin_no = 48, isLabel = True, pins_per_side = [14, 10, 14, 10]) == (3, 2)
