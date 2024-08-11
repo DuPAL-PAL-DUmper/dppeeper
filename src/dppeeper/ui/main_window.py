@@ -3,6 +3,8 @@
 from tkinter import BOTH, CENTER, LEFT, RAISED, TOP, X, IntVar, ttk
 from tkinter.ttk import Frame, Checkbutton, Label, Button
 
+import serial
+
 from dppeeper.ic.ic_definition import ICDefinition
 from dppeeper.ui.ui_utilities import UIUtilities, UIPinGridType
 from dupicolib.board_commands import BoardCommands
@@ -10,6 +12,15 @@ from dupicolib.board_commands import BoardCommands
 class MainWin(Frame):
     _ic_definition: ICDefinition
     _board_commands: BoardCommands
+    _check_hiz: bool
+    _skip_hiz: list[int]
+
+    _always_high_mask: int
+
+    _ser = serial.Serial | None
+    
+    _checkb_states: dict[int, IntVar]
+    _pin_state_labels: dict[int, Label]
 
     _IC_NAME_LABEL_STYLE = 'ICNAME.TLabel'
 
@@ -21,17 +32,19 @@ class MainWin(Frame):
 
     _RESET_BUTTON_STYLE = 'RESET.TButton'
 
-    _checkb_states: dict[int, IntVar]
-    _pin_state_labels: dict[int, Label]
-
-    def __init__(self, name: str, ic_definition: ICDefinition, board_commands: BoardCommands) -> None:
+    def __init__(self, name: str, ic_definition: ICDefinition, board_commands: BoardCommands, check_hiz: bool = False, skip_hiz: list[int] = [],  ser: serial.Serial | None = None) -> None:
         super().__init__()
 
         self._ic_definition = ic_definition
         self._board_commands = board_commands
+        self._check_hiz = check_hiz
+        self._skip_hiz = skip_hiz
+        self._ser = ser
 
         self._checkb_states = {}
         self._pin_state_labels = {}
+
+        self._always_high_mask = self._board_commands.map_value_to_pins(self._ic_definition.adapter_hi_pins, 0xFFFFFFFFFFFFFFFF)
 
         self.buildStyles()
         self.initUI(name)
@@ -121,6 +134,12 @@ class MainWin(Frame):
 
         self.master.title(name)
 
+    def _write_val(self, val: int) -> int | None:
+        map_val: int = self._board_commands.map_value_to_pins(self._ic_definition.zif_map, val)
+        map_val = map_val | self._always_high_mask
+
+        return self._board_commands.write_pins(self._ser, map_val)
+
     def _update_labels(self, read_val: int, hiz_val: int) -> None:
         """
         Update the state labels of each pin according to the value read
@@ -154,5 +173,5 @@ class MainWin(Frame):
         for k,v in self._checkb_states.items():
             v.set(0)
 
-    def _cmd_clock(self, zif_pin: int) -> None:
+    def _cmd_clock(self, pin: int) -> None:
         pass

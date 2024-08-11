@@ -114,7 +114,7 @@ def cli() -> int:
                 case Subcommands.SIM.value:
                     sim_command(ic_definition, args.skip_note)
                 case Subcommands.DUPICO.value:
-                    connect_command(args.port, args.baudrate, ic_definition, args.skip_note)
+                    connect_command(args.port, args.baudrate, ic_definition, args.skip_note, args.check_hiz, args.skip_hiz)
                 case _:
                     _LOGGER.critical(f'Unsupported command {args.subcommand}')
 
@@ -126,16 +126,16 @@ def cli() -> int:
         _LOGGER.info('Quitting.')          
     return 0
 
-def start_ui(ic_defintion: ICDefinition, command_class: BoardCommands) -> None:
+def start_ui(name: str, ic_definition: ICDefinition, command_class: BoardCommands, check_hiz: bool = False, skip_hiz: list[int] = [], ser: serial.Serial | None = None) -> None:
     root: Tk = Tk()
-    mw = MainWin(name='dppeeper', ic_definition=ic_defintion, board_commands=command_class)
+    mw = MainWin(name=name, ic_definition=ic_definition, board_commands=command_class, check_hiz=check_hiz, skip_hiz=skip_hiz, ser=ser)
     root.resizable(False, False)
     root.mainloop()
 
 def sim_command(ic_definition: ICDefinition, skip_note: bool) -> None:
     raise NotImplementedError('Simulation mode not currently implemented.')
 
-def connect_command(port_name: str, baudrate: int, ic_definition: ICDefinition, skip_note: bool = False) -> int:
+def connect_command(port_name: str, baudrate: int, ic_definition: ICDefinition, skip_note: bool = False, check_hiz: bool = False, skip_hiz: list[int] = []) -> int:
     ser_port: serial.Serial | None = None
     
     try:
@@ -186,7 +186,7 @@ def connect_command(port_name: str, baudrate: int, ic_definition: ICDefinition, 
         command_class.set_power(ser_port, True)
 
         # And finally, start the UI
-        start_ui(ic_definition, command_class)
+        start_ui(f'{__name__} - {__version__}', ic_definition, command_class, check_hiz, skip_hiz, ser_port)
     finally:
         if ser_port and not ser_port.closed:
             _LOGGER.debug('Closing the serial port.')
