@@ -9,11 +9,21 @@ from dppeeper.ui.ui_utilities import UIUtilities
 class MainWin(Frame):
     _ic_definition: ICDefinition
 
+    _IC_NAME_LABEL_STYLE = 'ICNAME.TLabel'
+
+    _POWER_LABEL_STYLE = 'PWR.TLabel'
+    _HI_LABEL_STYLE = 'HI.TLabel'
+    _LO_LABEL_STYLE = 'LO.TLabel'
+    _Z_LABEL_STYLE = 'Z.TLabel'
+
+    _RESET_BUTTON_STYLE = 'RESET.TButton'
+
     def __init__(self, name: str, ic_definition: ICDefinition) -> None:
         super().__init__()
 
         self._ic_definition = ic_definition
 
+        self.buildStyles()
         self.initUI(name)
 
     def centerWindow(self):
@@ -28,15 +38,20 @@ class MainWin(Frame):
 
         self.master.geometry(f'{w}x{h}+{x}+{y}')
 
-    def initUI(self, name: str):
-#        style = ttk.Style()
-#        style.theme_use('default')
-#        style.configure('TCheckbutton', focuscolor=self.master.cget("background"))
-#        style.configure('TCheckbutton', activebackground=self.master.cget("background"))
-#        style.configure('TCheckbutton', background=self.master.cget("background"))
+    def buildStyles(self) -> None:
+        style = ttk.Style()
 
-        name_label = Label(self, text=self._ic_definition.name, anchor='center')
-        name_label.pack(side='top', anchor='center', fill=X)
+        style.configure(self._IC_NAME_LABEL_STYLE, font=('Arial', '16', 'bold'))
+        style.configure(self._POWER_LABEL_STYLE, background='#AAAAAA')
+        style.configure(self._HI_LABEL_STYLE, background='#B7FFB7')
+        style.configure(self._LO_LABEL_STYLE, background='#FFB7B7')
+        style.configure(self._Z_LABEL_STYLE, background='#FFF4B7')
+
+        style.configure(self._RESET_BUTTON_STYLE, font=('Sans','10','bold'), foreground='red')        
+
+    def initUI(self, name: str) -> None:
+        name_label = Label(self, text=self._ic_definition.name, anchor=CENTER, style=self._IC_NAME_LABEL_STYLE)
+        name_label.pack(side=TOP, anchor=CENTER, fill=X)
 
         grid_w: int; grid_h: int
         grid_w, grid_h = UIUtilities.calculateGridSize(self._ic_definition.pins_per_side)
@@ -55,13 +70,13 @@ class MainWin(Frame):
             c_x, c_y = UIUtilities.calculatePinPosition(i + 1, False, self._ic_definition.pins_per_side)
 
             if pin == 21: # GND pins
-                gnd_lbl = Label(grid_frame, text='GND', width = 6)
+                gnd_lbl = Label(grid_frame, text='GND', width = 6, anchor=CENTER, style=self._POWER_LABEL_STYLE)
                 gnd_lbl.grid(row=l_y, column=l_x)
             elif pin == 42: # Power pins
-                pwr_lbl = Label(grid_frame, text='PWR', width = 6)
+                pwr_lbl = Label(grid_frame, text='PWR', width = 6, anchor=CENTER, style=self._POWER_LABEL_STYLE)
                 pwr_lbl.grid(row=l_y, column=l_x)
             else:
-                gen_lbl = Label(grid_frame, text=self._ic_definition.pin_names[i], width = 6)
+                gen_lbl = Label(grid_frame, text=self._ic_definition.pin_names[i], width = 6, anchor=CENTER, style=self._LO_LABEL_STYLE)
                 gen_lbl.grid(row=l_y, column=l_x)
                 gen_chk = Checkbutton(grid_frame, text=None, takefocus=False)
                 gen_chk.invoke()
@@ -75,10 +90,12 @@ class MainWin(Frame):
 
         set_button = Button(inner_button_frame, text='SET')
         set_button.pack(anchor=CENTER, side=LEFT, padx=5, pady=5)
-        clear_button = Button(inner_button_frame, text='CLEAR')
-        clear_button.pack(anchor=CENTER, side=LEFT, padx=5, pady=5)
         read_button = Button(inner_button_frame, text='READ')
         read_button.pack(anchor=CENTER, side=LEFT, padx=5, pady=5)
+        clear_button = Button(inner_button_frame, text='CLEAR')
+        clear_button.pack(anchor=CENTER, side=LEFT, padx=5, pady=5)
+        pcycle_button = Button(inner_button_frame, text='P.CYCLE', style=self._RESET_BUTTON_STYLE)
+        pcycle_button.pack(anchor=CENTER, side=LEFT, padx=5, pady=5)
 
         clock_button_frame = Frame(button_frame)
         clock_button_frame.pack(side=TOP, anchor=CENTER)
