@@ -19,13 +19,15 @@ class MainWin(Frame):
 
     _RESET_BUTTON_STYLE = 'RESET.TButton'
 
-    _checkb_states: list[IntVar]
+    _checkb_states: dict[int, IntVar]
+    _pin_state_labels: dict[int, Label]
 
     def __init__(self, name: str, ic_definition: ICDefinition) -> None:
         super().__init__()
 
         self._ic_definition = ic_definition
-        self._checkb_states = []
+        self._checkb_states = {}
+        self._pin_state_labels = {}
 
         self.buildStyles()
         self.initUI(name)
@@ -88,9 +90,13 @@ class MainWin(Frame):
             else:
                 gen_lbl = Label(grid_frame, text=self._ic_definition.pin_names[i], width = 6, anchor=CENTER, style=self._LO_LABEL_STYLE)
                 gen_lbl.grid(row=l_y, column=l_x)
+                # Save the labels that represent the state of pins, we're also saving GND and power pins, to make sure
+                # the index value for the label matches the pin number
+                self._pin_state_labels[i] = gen_lbl
                 
+                # Save the variables that store the state for checkboxes
                 chkb_var: IntVar = IntVar(value=0)
-                self._checkb_states.append(chkb_var)
+                self._checkb_states[i] = chkb_var
                 gen_chk = Checkbutton(grid_frame, text=None, takefocus=False, variable=chkb_var)
                 gen_chk.grid(row=c_y, column=c_x)
 
