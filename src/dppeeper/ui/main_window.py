@@ -1,6 +1,6 @@
 """This module contains code for the main window"""
 
-from tkinter import BOTH, X, ttk
+from tkinter import BOTH, CENTER, LEFT, RAISED, TOP, X, ttk
 from tkinter.ttk import Frame, Checkbutton, Label, Button
 
 from dppeeper.ic.ic_definition import ICDefinition
@@ -42,11 +42,11 @@ class MainWin(Frame):
         grid_w, grid_h = UIUtilities.calculateGridSize(self._ic_definition.pins_per_side)
 
         grid_frame = Frame(self)
-        grid_frame.pack(side='top', anchor='center')
+        grid_frame.pack(side=TOP, anchor=CENTER)
         for col in range(0, grid_w):
             grid_frame.columnconfigure(col, pad=15)
         for row in range(0, grid_h):
-            grid_frame.rowconfigure(row, pad=15)
+            grid_frame.rowconfigure(row, pad=10)
         
         for i, pin in enumerate(self._ic_definition.zif_map):
             l_x: int; l_y: int
@@ -67,11 +67,26 @@ class MainWin(Frame):
                 gen_chk.invoke()
                 gen_chk.grid(row=c_y, column=c_x)
 
-        button_frame = Frame(self)
-        button_frame.pack(fill=BOTH, expand=True, side='top', anchor='center')
+        button_frame = Frame(self, relief=RAISED, borderwidth=1, padding=5)
+        button_frame.pack(fill=BOTH, expand=True, side=TOP, anchor=CENTER)
 
+        inner_button_frame = Frame(button_frame)
+        inner_button_frame.pack(side=TOP, anchor=CENTER)
+
+        set_button = Button(inner_button_frame, text='SET')
+        set_button.pack(anchor=CENTER, side=LEFT, padx=5, pady=5)
+        clear_button = Button(inner_button_frame, text='CLEAR')
+        clear_button.pack(anchor=CENTER, side=LEFT, padx=5, pady=5)
+        read_button = Button(inner_button_frame, text='READ')
+        read_button.pack(anchor=CENTER, side=LEFT, padx=5, pady=5)
+
+        clock_button_frame = Frame(button_frame)
+        clock_button_frame.pack(side=TOP, anchor=CENTER)
+        
+        for i, clk_pin in enumerate(self._ic_definition.clk_pins):
+            clk_button = Button(clock_button_frame, text=f'Clock {i+1}')
+            clk_button.pack(anchor=CENTER, side=LEFT, padx=5, pady=5)
 
         self.pack(fill=BOTH, expand=1)
 
         self.master.title(name)
-        self.centerWindow()

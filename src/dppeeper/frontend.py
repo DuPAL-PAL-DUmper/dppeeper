@@ -128,6 +128,7 @@ def cli() -> int:
 def start_ui(ic_defintion: ICDefinition) -> None:
     root: Tk = Tk()
     mw = MainWin(name='dppeeper', ic_definition=ic_defintion)
+    root.resizable(False, False)
     root.mainloop()
 
 def sim_command(ic_definition: ICDefinition) -> None:
