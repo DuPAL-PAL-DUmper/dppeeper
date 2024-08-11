@@ -125,9 +125,9 @@ def cli() -> int:
         _LOGGER.info('Quitting.')          
     return 0
 
-def start_ui(ic_defintion: ICDefinition) -> None:
+def start_ui(ic_defintion: ICDefinition, command_class: BoardCommands) -> None:
     root: Tk = Tk()
-    mw = MainWin(name='dppeeper', ic_definition=ic_defintion)
+    mw = MainWin(name='dppeeper', ic_definition=ic_defintion, board_commands=command_class)
     root.resizable(False, False)
     root.mainloop()
 
@@ -177,7 +177,7 @@ def connect_command(port_name: str, baudrate: int, ic_definition: ICDefinition) 
         command_class: BoardCommands = BoardCommandClassFactory.get_command_class(model, fw_version_dict)
 
         # And finally, start the UI
-        start_ui(ic_definition)
+        start_ui(ic_definition, command_class)
     finally:
         if ser_port and not ser_port.closed:
             _LOGGER.debug('Closing the serial port.')

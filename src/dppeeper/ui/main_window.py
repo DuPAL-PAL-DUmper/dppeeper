@@ -5,9 +5,11 @@ from tkinter.ttk import Frame, Checkbutton, Label, Button
 
 from dppeeper.ic.ic_definition import ICDefinition
 from dppeeper.ui.ui_utilities import UIUtilities, UIPinGridType
+from dupicolib.board_commands import BoardCommands
 
 class MainWin(Frame):
     _ic_definition: ICDefinition
+    _board_commands: BoardCommands
 
     _IC_NAME_LABEL_STYLE = 'ICNAME.TLabel'
 
@@ -22,27 +24,17 @@ class MainWin(Frame):
     _checkb_states: dict[int, IntVar]
     _pin_state_labels: dict[int, Label]
 
-    def __init__(self, name: str, ic_definition: ICDefinition) -> None:
+    def __init__(self, name: str, ic_definition: ICDefinition, board_commands: BoardCommands) -> None:
         super().__init__()
 
         self._ic_definition = ic_definition
+        self._board_commands = board_commands
+
         self._checkb_states = {}
         self._pin_state_labels = {}
 
         self.buildStyles()
         self.initUI(name)
-
-    def centerWindow(self):
-        w = 400
-        h = 600
-
-        sw = self.master.winfo_screenwidth()
-        sh = self.master.winfo_screenheight()
-
-        x = (sw - w)//2
-        y = (sh - h)//2
-
-        self.master.geometry(f'{w}x{h}+{x}+{y}')
 
     def buildStyles(self) -> None:
         style = ttk.Style()
@@ -106,22 +98,61 @@ class MainWin(Frame):
         inner_button_frame = Frame(button_frame)
         inner_button_frame.pack(side=TOP, anchor=CENTER)
 
-        set_button = Button(inner_button_frame, text='SET')
+        set_button = Button(inner_button_frame, text='SET', command=self._cmd_set)
         set_button.pack(anchor=CENTER, side=LEFT, padx=5, pady=5)
-        read_button = Button(inner_button_frame, text='READ')
+
+        read_button = Button(inner_button_frame, text='READ', command=self._cmd_read)
         read_button.pack(anchor=CENTER, side=LEFT, padx=5, pady=5)
-        clear_button = Button(inner_button_frame, text='CLEAR')
+
+        clear_button = Button(inner_button_frame, text='CLEAR', command=self._cmd_clear)
         clear_button.pack(anchor=CENTER, side=LEFT, padx=5, pady=5)
-        pcycle_button = Button(inner_button_frame, text='P.CYCLE', style=self._RESET_BUTTON_STYLE)
+
+        pcycle_button = Button(inner_button_frame, text='P.CYCLE', style=self._RESET_BUTTON_STYLE, command=self._cmd_powercycle)
         pcycle_button.pack(anchor=CENTER, side=LEFT, padx=5, pady=5)
 
         clock_button_frame = Frame(button_frame)
         clock_button_frame.pack(side=TOP, anchor=CENTER)
         
         for i, clk_pin in enumerate(self._ic_definition.clk_pins):
-            clk_button = Button(clock_button_frame, text=f'Clock {i+1}')
+            clk_button = Button(clock_button_frame, text=f'Clock {i+1}', command=lambda: self._cmd_clock(clk_pin))
             clk_button.pack(anchor=CENTER, side=LEFT, padx=5, pady=5)
 
         self.pack(fill=BOTH, expand=1)
 
         self.master.title(name)
+
+    def _update_labels(self, read_val: int, hiz_val: int) -> None:
+        """
+        Update the state labels of each pin according to the value read
+
+        Args:
+            read_val (int): value read from the dupico, already remapped (e.g. bit 0 corresponds to pin 1 of the IC)
+            hiz_val (int): if a bit is 1 in this map, it means the pin is hi-z
+        """        
+        for k,v in self._pin_state_labels.items():
+            state: bool = ((read_val >> k) & 0x01) == 1
+            hiz: bool = ((hiz_val >> k) & 0x01) == 1
+
+            if hiz:
+                v.configure(style=self._Z_LABEL_STYLE)
+            elif state:
+                v.configure(style=self._HI_LABEL_STYLE)
+            else:
+                v.configure(style=self._LO_LABEL_STYLE)
+            
+
+    def _cmd_set(self) -> None:
+        pass
+
+    def _cmd_read(self) -> None:
+        pass
+
+    def _cmd_powercycle(self) -> None:
+        pass
+
+    def _cmd_clear(self) -> None:
+        for k,v in self._checkb_states.items():
+            v.set(0)
+
+    def _cmd_clock(self, zif_pin: int) -> None:
+        pass
