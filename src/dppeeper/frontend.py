@@ -4,6 +4,8 @@ import argparse
 import traceback
 import logging
 
+from tkinter import Tk
+
 from enum import Enum
 
 import serial
@@ -18,6 +20,8 @@ from dppeeper import __name__, __version__
 from dppeeper.peeper_utilities import PeeperUtilities
 from dppeeper.ic.ic_definition import ICDefinition
 from dppeeper.ic.ic_loader import ICLoader
+
+from dppeeper.ui.main_window import MainWin
 
 MIN_SUPPORTED_MODEL: int = 3
 
@@ -121,6 +125,11 @@ def cli() -> int:
         _LOGGER.info('Quitting.')          
     return 0
 
+def start_ui(ic_defintion: ICDefinition) -> None:
+    root: Tk = Tk()
+    mw = MainWin(name='dppeeper', ic_definition=ic_defintion)
+    root.mainloop()
+
 def sim_command(ic_definition: ICDefinition) -> None:
     raise NotImplementedError('Simulation mode not currently implemented.')
 
@@ -165,6 +174,9 @@ def connect_command(port_name: str, baudrate: int, ic_definition: ICDefinition) 
 
         # Now we have enough information to obtain the class that handles commands specific for this board
         command_class: BoardCommands = BoardCommandClassFactory.get_command_class(model, fw_version_dict)
+
+        # And finally, start the UI
+        start_ui(ic_definition)
     finally:
         if ser_port and not ser_port.closed:
             _LOGGER.debug('Closing the serial port.')
