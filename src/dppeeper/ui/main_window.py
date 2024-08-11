@@ -134,6 +134,16 @@ class MainWin(Frame):
 
         self.master.title(name)
 
+    @staticmethod
+    def _generate_hiz_check_list(ic_definition: ICDefinition, skip_hiz: list[int] = []) -> list[int]:
+        check_list: list[int] = []
+
+        check_list.extend(ic_definition.o_pins)
+        check_list.extend(ic_definition.io_pins)
+        check_list.sort()
+
+        return [i for i in check_list if i not in skip_hiz]
+
     def _write_val(self, val: int) -> int | None:
         map_val: int = self._board_commands.map_value_to_pins(self._ic_definition.zif_map, val)
         map_val = map_val | self._always_high_mask
