@@ -1,16 +1,17 @@
 """This module contains code for the main window"""
 
-from tkinter import BOTH, CENTER, LEFT, RAISED, TOP, X, ttk
+from tkinter import BOTH, CENTER, LEFT, RAISED, TOP, X, IntVar, ttk
 from tkinter.ttk import Frame, Checkbutton, Label, Button
 
 from dppeeper.ic.ic_definition import ICDefinition
-from dppeeper.ui.ui_utilities import UIUtilities
+from dppeeper.ui.ui_utilities import UIUtilities, UIPinGridType
 
 class MainWin(Frame):
     _ic_definition: ICDefinition
 
     _IC_NAME_LABEL_STYLE = 'ICNAME.TLabel'
 
+    _PINNUM_LABEL_STYLE = 'PINN.TLabel'
     _POWER_LABEL_STYLE = 'PWR.TLabel'
     _HI_LABEL_STYLE = 'HI.TLabel'
     _LO_LABEL_STYLE = 'LO.TLabel'
@@ -18,10 +19,13 @@ class MainWin(Frame):
 
     _RESET_BUTTON_STYLE = 'RESET.TButton'
 
+    _checkb_states: list[IntVar]
+
     def __init__(self, name: str, ic_definition: ICDefinition) -> None:
         super().__init__()
 
         self._ic_definition = ic_definition
+        self._checkb_states = []
 
         self.buildStyles()
         self.initUI(name)
@@ -42,6 +46,7 @@ class MainWin(Frame):
         style = ttk.Style()
 
         style.configure(self._IC_NAME_LABEL_STYLE, font=('Arial', '16', 'bold'))
+        style.configure(self._PINNUM_LABEL_STYLE)
         style.configure(self._POWER_LABEL_STYLE, background='#AAAAAA')
         style.configure(self._HI_LABEL_STYLE, background='#B7FFB7')
         style.configure(self._LO_LABEL_STYLE, background='#FFB7B7')
@@ -66,8 +71,13 @@ class MainWin(Frame):
         for i, pin in enumerate(self._ic_definition.zif_map):
             l_x: int; l_y: int
             c_x: int; c_y: int
-            l_x, l_y = UIUtilities.calculatePinPosition(i + 1, True, self._ic_definition.pins_per_side)
-            c_x, c_y = UIUtilities.calculatePinPosition(i + 1, False, self._ic_definition.pins_per_side)
+            n_x: int; n_y: int
+            l_x, l_y = UIUtilities.calculatePinPosition(i + 1, UIPinGridType.LABEL, self._ic_definition.pins_per_side)
+            c_x, c_y = UIUtilities.calculatePinPosition(i + 1, UIPinGridType.CHECKBOX, self._ic_definition.pins_per_side)
+            n_x, n_y = UIUtilities.calculatePinPosition(i + 1, UIPinGridType.PIN_NUM, self._ic_definition.pins_per_side)
+
+            pn_lbl = Label(grid_frame, text=f'{i+1}', width = 6, anchor=CENTER, style=self._PINNUM_LABEL_STYLE)
+            pn_lbl.grid(row=n_y, column=n_x)
 
             if pin == 21: # GND pins
                 gnd_lbl = Label(grid_frame, text='GND', width = 6, anchor=CENTER, style=self._POWER_LABEL_STYLE)
@@ -78,8 +88,10 @@ class MainWin(Frame):
             else:
                 gen_lbl = Label(grid_frame, text=self._ic_definition.pin_names[i], width = 6, anchor=CENTER, style=self._LO_LABEL_STYLE)
                 gen_lbl.grid(row=l_y, column=l_x)
-                gen_chk = Checkbutton(grid_frame, text=None, takefocus=False)
-                gen_chk.invoke()
+                
+                chkb_var: IntVar = IntVar(value=0)
+                self._checkb_states.append(chkb_var)
+                gen_chk = Checkbutton(grid_frame, text=None, takefocus=False, variable=chkb_var)
                 gen_chk.grid(row=c_y, column=c_x)
 
         button_frame = Frame(self, relief=RAISED, borderwidth=1, padding=5)
