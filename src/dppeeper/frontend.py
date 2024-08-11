@@ -1,6 +1,7 @@
 """Frontend module"""
 
 import argparse
+import time
 import traceback
 import logging
 
@@ -111,9 +112,9 @@ def cli() -> int:
 
             match args.subcommand:
                 case Subcommands.SIM.value:
-                    sim_command(ic_definition)
+                    sim_command(ic_definition, args.skip_note)
                 case Subcommands.DUPICO.value:
-                    connect_command(args.port, args.baudrate, ic_definition)
+                    connect_command(args.port, args.baudrate, ic_definition, args.skip_note)
                 case _:
                     _LOGGER.critical(f'Unsupported command {args.subcommand}')
 
@@ -131,10 +132,10 @@ def start_ui(ic_defintion: ICDefinition, command_class: BoardCommands) -> None:
     root.resizable(False, False)
     root.mainloop()
 
-def sim_command(ic_definition: ICDefinition) -> None:
+def sim_command(ic_definition: ICDefinition, skip_note: bool) -> None:
     raise NotImplementedError('Simulation mode not currently implemented.')
 
-def connect_command(port_name: str, baudrate: int, ic_definition: ICDefinition) -> int:
+def connect_command(port_name: str, baudrate: int, ic_definition: ICDefinition, skip_note: bool = False) -> int:
     ser_port: serial.Serial | None = None
     
     try:
@@ -176,9 +177,27 @@ def connect_command(port_name: str, baudrate: int, ic_definition: ICDefinition) 
         # Now we have enough information to obtain the class that handles commands specific for this board
         command_class: BoardCommands = BoardCommandClassFactory.get_command_class(model, fw_version_dict)
 
+        print(f'Analyzing IC {ic_definition.name}')
+        if not skip_note and ic_definition.adapter_notes and bool(ic_definition.adapter_notes.strip()):
+            print_note(ic_definition.adapter_notes)
+
+        # Make sure that the required pins to be set are actually set, then power on
+        command_class.write_pins(ser_port, command_class.map_value_to_pins(ic_definition.adapter_hi_pins, 0xFFFFFFFFFFFFFFFF))
+        command_class.set_power(ser_port, True)
+
         # And finally, start the UI
         start_ui(ic_definition, command_class)
     finally:
         if ser_port and not ser_port.closed:
             _LOGGER.debug('Closing the serial port.')
             ser_port.close()
+
+def print_note(note: str, delay: int = 5) -> None:
+    print('-' * 10)
+    print(note.strip())
+    print('-' * 10)
+
+    for i in range(delay, 0, -1):
+        print(f'To cancel, press CTRL-C within {i} seconds'.ljust(80, ' '), end='\r')
+        time.sleep(1)
+    print(' ' * 80, end='\r')

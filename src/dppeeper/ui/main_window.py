@@ -114,7 +114,7 @@ class MainWin(Frame):
         clock_button_frame.pack(side=TOP, anchor=CENTER)
         
         for i, clk_pin in enumerate(self._ic_definition.clk_pins):
-            clk_button = Button(clock_button_frame, text=f'Clock {i+1}', command=lambda: self._cmd_clock(clk_pin))
+            clk_button = Button(clock_button_frame, text=f'Clock {clk_pin}', command=lambda: self._cmd_clock(clk_pin))
             clk_button.pack(anchor=CENTER, side=LEFT, padx=5, pady=5)
 
         self.pack(fill=BOTH, expand=1)

@@ -80,10 +80,9 @@ class ICDefinition:
         if len(self.pins_per_side) not in self._SUPPORTED_NUM_SIDES:
             raise ValueError(f'Number of sides {len(self.pins_per_side)} is not supported.')
 
-        # Remap pins on the ZIF socket
-        self.clk_pins = self._remap_pin_array(zif_map, clk_pins)
-        self.in_pins = self._remap_pin_array(zif_map, in_pins)
-        self.io_pins = self._remap_pin_array(zif_map, io_pins)
-        self.o_pins = self._remap_pin_array(zif_map, o_pins)
-        self.f_pins = self._remap_pin_array(zif_map, f_pins)
+        self.clk_pins = clk_pins
+        self.in_pins = in_pins
+        self.io_pins = io_pins
+        self.o_pins = o_pins
+        self.f_pins = f_pins
 

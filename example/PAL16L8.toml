@@ -28,7 +28,7 @@ f_pins = [13, 14, 15, 16, 17, 18]
 
 [adapter]
 # pins that need to be forced high to read this in the adapter
-hi_pins = []
+hi_pins = [22]
 # Notes on the adapter necessary to read this IC
 notes = "Insert the PAL POD in the dupico, topmost position in socket, and insert the PAL in the bottom of the ZIF24 socket."
 
