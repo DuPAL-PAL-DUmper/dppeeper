@@ -5,7 +5,8 @@ import time
 import traceback
 import logging
 
-from tkinter import Tk
+from importlib.resources import files
+from tkinter import Tk, PhotoImage
 
 from enum import Enum
 
@@ -128,8 +129,11 @@ def cli() -> int:
 
 def start_ui(name: str, ic_definition: ICDefinition, command_class: BoardCommands, check_hiz: bool = False, skip_hiz: list[int] = [], ser: serial.Serial | None = None) -> None:
     root: Tk = Tk()
+    ico_data: bytes = files('resources').joinpath('ico.png').read_bytes()
+    ico_img: PhotoImage = PhotoImage(data=ico_data)
     mw = MainWin(name=name, ic_definition=ic_definition, board_commands=command_class, check_hiz=check_hiz, skip_hiz=skip_hiz, ser=ser)
     root.resizable(False, False)
+    root.wm_iconphoto(False, ico_img)
     root.mainloop()
 
 def sim_command(ic_definition: ICDefinition, skip_note: bool) -> None:
