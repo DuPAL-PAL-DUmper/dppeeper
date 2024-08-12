@@ -26,7 +26,8 @@ dppeeper = "dppeeper.frontend:cli"
 
 [tool.setuptools.packages.find]
 where = ["src", "."]  # list of folders that contain the packages (["."] by default)
-
+include = ["dppeeper*", "resources*"]
+exclude = ["test*"]
 
 [project.urls]
 repository = "https://github.com/DuPAL-PAL-DUmper/dppeeper"
