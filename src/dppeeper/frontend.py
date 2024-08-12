@@ -59,7 +59,6 @@ def _build_argsparser() -> argparse.ArgumentParser:
                              default=False,
                              help='Check if output pins are Hi-Z or not.')    
     hiz_group.add_argument('--skip_hiz',
-                        action='append',
                         metavar='pin_to_skip',
                         nargs='+',
                         type=int,
@@ -116,7 +115,7 @@ def cli() -> int:
                 case Subcommands.SIM.value:
                     sim_command(ic_definition, args.skip_note)
                 case Subcommands.DUPICO.value:
-                    connect_command(args.port, args.baudrate, ic_definition, args.skip_note, args.check_hiz, *args.skip_hiz)
+                    connect_command(args.port, args.baudrate, ic_definition, args.skip_note, args.check_hiz, args.skip_hiz)
                 case _:
                     _LOGGER.critical(f'Unsupported command {args.subcommand}')
 
