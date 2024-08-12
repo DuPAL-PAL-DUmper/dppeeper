@@ -116,7 +116,7 @@ def cli() -> int:
                 case Subcommands.SIM.value:
                     sim_command(ic_definition, args.skip_note)
                 case Subcommands.DUPICO.value:
-                    connect_command(args.port, args.baudrate, ic_definition, args.skip_note, args.check_hiz, args.skip_hiz)
+                    connect_command(args.port, args.baudrate, ic_definition, args.skip_note, args.check_hiz, *args.skip_hiz)
                 case _:
                     _LOGGER.critical(f'Unsupported command {args.subcommand}')
 
