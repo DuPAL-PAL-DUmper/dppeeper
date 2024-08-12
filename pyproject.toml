@@ -22,10 +22,11 @@ dependencies = [
 ]
 
 [project.scripts]
-dppeeper = 'dppeeper.frontend:cli'
+dppeeper = "dppeeper.frontend:cli"
 
-[tool.setuptools]
-py-modules = [ "__init__" ]
+[tool.setuptools.packages.find]
+where = ["src", "."]  # list of folders that contain the packages (["."] by default)
+
 
 [project.urls]
 repository = "https://github.com/DuPAL-PAL-DUmper/dppeeper"
