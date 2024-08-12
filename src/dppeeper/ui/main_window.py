@@ -1,5 +1,6 @@
 """This module contains code for the main window"""
 
+import logging
 from tkinter import BOTH, CENTER, LEFT, RAISED, TOP, X, IntVar, ttk
 from tkinter.ttk import Frame, Checkbutton, Label, Button
 from typing import Tuple
@@ -22,6 +23,8 @@ class MainWin(Frame):
     
     _checkb_states: dict[int, IntVar]
     _pin_state_labels: dict[int, Label]
+
+    _LOGGER = logging.getLogger(__name__)
 
     _IC_NAME_LABEL_STYLE = 'ICNAME.TLabel'
 
@@ -136,7 +139,46 @@ class MainWin(Frame):
         self.master.title(name)
 
     def _set_and_check_pins(self, val: int) -> Tuple[int, int]:
-        pass
+        hiz_pins: int = 0
+        hiz_pins_to_remove: list[int] = []
+
+        hiz_mask: int = self._build_hiz_mask(self._hiz_check_list)
+        ret: int = self._write_val(val)
+
+        # The pins we are currently setting between those we need to check for hiz
+        toggled_hiz_pins: int = val & hiz_mask
+
+        # The inverse of the same pins, we will use this to check if they follow our pulls or not
+        rev_toggled_hiz_pins: int = (~toggled_hiz_pins) & hiz_mask
+
+        for pin in self._hiz_check_list:
+            pin_mask: int = 1 << (pin - 1)
+            # Invert the corresponding pin
+            wr_val: int = (val & ~pin_mask) | (rev_toggled_hiz_pins & pin_mask)
+            ret_chk = self._write_val(wr_val)
+            self._write_val(val)
+            
+            changed_pins: int = ret ^ ret_chk
+            if changed_pins == pin_mask: # The only pin that changed is the one we are checking. It's hi-z
+                hiz_pins = hiz_pins | pin_mask
+            elif changed_pins != 0: # One or more pins have changed, but it is not our checked pin, means we might have toggled an input!!!
+                hiz_pins_to_remove.append(pin)
+
+        # Purge the pins that we detected being inputs, we don't want to check them again!!!
+        for pin in hiz_pins_to_remove:
+            self._LOGGER.warning(f'Removing pin {pin} from list of potential hi-z pins: triggered changes in other pins, probably an input!')
+            self._hiz_check_list.remove(pin)
+
+        return (ret, hiz_pins)
+
+    @staticmethod
+    def _build_hiz_mask(hiz_pins: list[int]) -> int:
+        mask: int = 0
+
+        for i in hiz_pins:
+            mask = mask | (1 << (i-1))
+
+        return mask
 
     def _write_val(self, val: int) -> int | None:
         map_val: int = self._board_commands.map_value_to_pins(self._ic_definition.zif_map, val)
