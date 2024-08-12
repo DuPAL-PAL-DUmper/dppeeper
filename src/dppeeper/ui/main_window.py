@@ -234,13 +234,24 @@ class MainWin(Frame):
         self._cmd_set()
 
     def _cmd_clear(self) -> None:
-        for k,v in self._checkb_states.items():
+        for _,v in self._checkb_states.items():
             v.set(0)
 
         self._cmd_set()
 
     def _cmd_clock(self, pin: int) -> None:
-        pass
+        read: int; hiz: int
+
+        # Start with clearing the pin checkbox we'll use for the clock
+        self._checkb_states[pin - 1].set(0)
+
+        set_val: int = self._build_set_value()
+        set_val_clk: int = set_val | (1 << (pin - 1))
+
+        self._write_val(set_val)
+        self._write_val(set_val_clk)
+        read, hiz = self._set_and_check_pins(set_val)
+        self._update_labels(read, hiz)
 
     @staticmethod
     def _generate_hiz_check_list(ic_definition: ICDefinition, skip_hiz: list[int] = []) -> list[int]:
