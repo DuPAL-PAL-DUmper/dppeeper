@@ -4,6 +4,7 @@ import logging
 from tkinter import BOTH, CENTER, LEFT, RAISED, TOP, X, IntVar, ttk
 from tkinter.ttk import Frame, Checkbutton, Label, Button
 from typing import Tuple
+import time
 
 import serial
 
@@ -52,6 +53,9 @@ class MainWin(Frame):
 
         self.buildStyles()
         self.initUI(name)
+
+        # Send the first command to read the state
+        self._cmd_set()
 
     def buildStyles(self) -> None:
         style = ttk.Style()
@@ -117,9 +121,6 @@ class MainWin(Frame):
 
         set_button = Button(inner_button_frame, text='SET', command=self._cmd_set)
         set_button.pack(anchor=CENTER, side=LEFT, padx=5, pady=5)
-
-        read_button = Button(inner_button_frame, text='READ', command=self._cmd_read)
-        read_button.pack(anchor=CENTER, side=LEFT, padx=5, pady=5)
 
         clear_button = Button(inner_button_frame, text='CLEAR', command=self._cmd_clear)
         clear_button.pack(anchor=CENTER, side=LEFT, padx=5, pady=5)
@@ -225,15 +226,18 @@ class MainWin(Frame):
         read, hiz = self._set_and_check_pins(set_val)
         self._update_labels(read, hiz)
 
-    def _cmd_read(self) -> None:
-        pass
-
     def _cmd_powercycle(self) -> None:
-        pass
+        self._board_commands.set_power(self._ser, False)
+        time.sleep(0.5)
+        self._board_commands.set_power(self._ser, True)
+        time.sleep(0.5)
+        self._cmd_set()
 
     def _cmd_clear(self) -> None:
         for k,v in self._checkb_states.items():
             v.set(0)
+
+        self._cmd_set()
 
     def _cmd_clock(self, pin: int) -> None:
         pass
