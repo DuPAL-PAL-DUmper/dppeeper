@@ -2,6 +2,7 @@
 
 from tkinter import BOTH, CENTER, LEFT, RAISED, TOP, X, IntVar, ttk
 from tkinter.ttk import Frame, Checkbutton, Label, Button
+from typing import Tuple
 
 import serial
 
@@ -12,8 +13,8 @@ from dupicolib.board_commands import BoardCommands
 class MainWin(Frame):
     _ic_definition: ICDefinition
     _board_commands: BoardCommands
-    _check_hiz: bool
-    _skip_hiz: list[int]
+
+    _hiz_check_list: list[int]
 
     _always_high_mask: int
 
@@ -37,9 +38,9 @@ class MainWin(Frame):
 
         self._ic_definition = ic_definition
         self._board_commands = board_commands
-        self._check_hiz = check_hiz
-        self._skip_hiz = skip_hiz
         self._ser = ser
+
+        self._hiz_check_list = self._generate_hiz_check_list(ic_definition, skip_hiz) if check_hiz else []
 
         self._checkb_states = {}
         self._pin_state_labels = {}
@@ -134,21 +135,18 @@ class MainWin(Frame):
 
         self.master.title(name)
 
-    @staticmethod
-    def _generate_hiz_check_list(ic_definition: ICDefinition, skip_hiz: list[int] = []) -> list[int]:
-        check_list: list[int] = []
-
-        check_list.extend(ic_definition.o_pins)
-        check_list.extend(ic_definition.io_pins)
-        check_list.sort()
-
-        return [i for i in check_list if i not in skip_hiz]
+    def _set_and_check_pins(self, val: int) -> Tuple[int, int]:
+        pass
 
     def _write_val(self, val: int) -> int | None:
         map_val: int = self._board_commands.map_value_to_pins(self._ic_definition.zif_map, val)
         map_val = map_val | self._always_high_mask
 
-        return self._board_commands.write_pins(self._ser, map_val)
+        res_wr: int | None = self._board_commands.write_pins(self._ser, map_val)
+        if res_wr is None:
+            raise SystemError('Read from the dupico failed')
+
+        return self._board_commands.map_pins_to_value(self._ic_definition.zif_map, res_wr)
 
     def _update_labels(self, read_val: int, hiz_val: int) -> None:
         """
@@ -185,3 +183,13 @@ class MainWin(Frame):
 
     def _cmd_clock(self, pin: int) -> None:
         pass
+
+    @staticmethod
+    def _generate_hiz_check_list(ic_definition: ICDefinition, skip_hiz: list[int] = []) -> list[int]:
+        check_list: list[int] = []
+
+        check_list.extend(ic_definition.o_pins)
+        check_list.extend(ic_definition.io_pins)
+        check_list.sort()
+
+        return [i for i in check_list if i not in skip_hiz]
