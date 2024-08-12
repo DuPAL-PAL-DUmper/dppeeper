@@ -269,6 +269,7 @@ class MainWin(Frame):
 
         check_list.extend(ic_definition.o_pins)
         check_list.extend(ic_definition.io_pins)
+        check_list.extend(ic_definition.q_pins)
         check_list.sort()
 
         return [i for i in check_list if i not in skip_hiz]
