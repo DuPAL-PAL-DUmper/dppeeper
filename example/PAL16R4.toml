@@ -1,6 +1,6 @@
-# Example of a definition for a PAL16L8
+# Example of a definition for a PAL16R4
 
-name = "PAL16L8"
+name = "PAL16R4"
 
 [pinout]
 # Defines both package structure and number of pins for each side. L, R, in order.
@@ -12,25 +12,25 @@ pins_per_side = [10, 10]
 ZIF_map = [3, 4, 5, 6, 7, 8, 9, 10, 11, 21, 31, 32, 33, 34, 35, 36, 37, 38, 39, 42]
 
 # List of the pins, as numbered on the IC, that can be used as clock inputs
-clk_pins = []
+clk_pins = [1]
 
 # List of the pins, as numbered on the IC, that are input only pins
-in_pins = [1, 2, 3, 4, 5, 6, 7, 8, 9, 11]
+in_pins = [2, 3, 4, 5, 6, 7, 8, 9]
 
 # List of the pins, as numbered on the IC, that are I/O pins (can be configured as inputs or outputs)
-io_pins = [13, 14, 15, 16, 17, 18]
+io_pins = [12, 13, 18, 19]
 
 # List of the pins, as numbered on the IC, that are output only
-o_pins = [12, 19]
+o_pins = []
 
 # List of the pins, as numbered on the IC, that can be used as feedback pins
-f_pins = [13, 14, 15, 16, 17, 18]
+f_pins = [12, 13, 14, 15, 16, 17, 18, 19]
 
 # List of the pins, as numbered on the IC, that are registered outputs
-q_pins = []
+q_pins = [14, 15, 16, 17]
 
 # List of the pins that are active low OE
-oe_l_pins = []
+oe_l_pins = [11]
 
 # List of the pins that are active high OE
 oe_h_pins = []
