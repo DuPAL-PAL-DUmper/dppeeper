@@ -51,6 +51,8 @@ class ICDefinition:
         for pin in clk_pins:
             if len(pin_names[pin-1]) > 0:
                 pin_names[pin-1] = pin_names[pin-1] + '/CLK'
+            else:
+                pin_names[pin-1] = 'CLK'
 
         for pin in q_pins:
             pin_names[pin-1] = f'Q{pin}'

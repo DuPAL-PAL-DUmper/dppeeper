@@ -116,24 +116,25 @@ class MainWin(Frame):
         button_frame = Frame(self, relief=RAISED, borderwidth=1, padding=5)
         button_frame.pack(fill=BOTH, expand=True, side=TOP, anchor=CENTER)
 
-        inner_button_frame = Frame(button_frame)
-        inner_button_frame.pack(side=TOP, anchor=CENTER)
-
-        set_button = Button(inner_button_frame, text='SET', command=self._cmd_set)
-        set_button.pack(anchor=CENTER, side=LEFT, padx=5, pady=5)
-
-        clear_button = Button(inner_button_frame, text='CLEAR', command=self._cmd_clear)
-        clear_button.pack(anchor=CENTER, side=LEFT, padx=5, pady=5)
-
-        pcycle_button = Button(inner_button_frame, text='P.CYCLE', style=self._RESET_BUTTON_STYLE, command=self._cmd_powercycle)
-        pcycle_button.pack(anchor=CENTER, side=LEFT, padx=5, pady=5)
-
         clock_button_frame = Frame(button_frame)
-        clock_button_frame.pack(side=TOP, anchor=CENTER)
+        clock_button_frame.pack(side=TOP, anchor=CENTER, fill=X)
         
         for i, clk_pin in enumerate(self._ic_definition.clk_pins):
             clk_button = Button(clock_button_frame, text=f'Clock {clk_pin}', command=lambda: self._cmd_clock(clk_pin))
             clk_button.pack(anchor=CENTER, side=LEFT, padx=5, pady=5)
+
+        control_button_frame = Frame(button_frame)
+        control_button_frame.pack(side=TOP, anchor=CENTER, fill=X)
+
+        set_button = Button(control_button_frame, text='SET', command=self._cmd_set)
+        set_button.pack(anchor=CENTER, side=LEFT, padx=5, pady=5)
+
+        clear_button = Button(control_button_frame, text='CLEAR', command=self._cmd_clear)
+        clear_button.pack(anchor=CENTER, side=LEFT, padx=5, pady=5)
+
+        pcycle_button = Button(control_button_frame, text='P.CYCLE', style=self._RESET_BUTTON_STYLE, command=self._cmd_powercycle)
+        pcycle_button.pack(anchor=CENTER, side=LEFT, padx=5, pady=5)
+
 
         self.pack(fill=BOTH, expand=1)
 
@@ -223,10 +224,15 @@ class MainWin(Frame):
         read: int; hiz: int
 
         set_val: int = self._build_set_value()
+        
+        self._LOGGER.debug(f'Setting {set_val:0{16}X}')
+        
         read, hiz = self._set_and_check_pins(set_val)
         self._update_labels(read, hiz)
 
     def _cmd_powercycle(self) -> None:
+        self._LOGGER.debug('Power cycling IC')
+        
         self._board_commands.set_power(self._ser, False)
         time.sleep(0.5)
         self._board_commands.set_power(self._ser, True)
@@ -234,12 +240,16 @@ class MainWin(Frame):
         self._cmd_set()
 
     def _cmd_clear(self) -> None:
+        self._LOGGER.debug('Clearing all the pins')
+
         for _,v in self._checkb_states.items():
             v.set(0)
 
         self._cmd_set()
 
     def _cmd_clock(self, pin: int) -> None:
+        self._LOGGER.debug(f'Toggling clock {pin}')
+        
         read: int; hiz: int
 
         # Start with clearing the pin checkbox we'll use for the clock
