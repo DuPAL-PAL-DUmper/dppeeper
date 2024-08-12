@@ -1,26 +1,27 @@
 """This module contains code for the main window"""
 
 import logging
+from typing import Tuple, cast
+import time
+
 from tkinter import BOTH, CENTER, LEFT, RAISED, TOP, X, IntVar, ttk
 from tkinter.ttk import Frame, Checkbutton, Label, Button
-from typing import Tuple
-import time
 
 import serial
 
 from dppeeper.ic.ic_definition import ICDefinition
 from dppeeper.ui.ui_utilities import UIUtilities, UIPinGridType
-from dupicolib.board_commands import BoardCommands
+from dupicolib.board_commands_interface import BoardCommandsInterface
 
 class MainWin(Frame):
     _ic_definition: ICDefinition
-    _board_commands: type[BoardCommands]
+    _board_commands: type[BoardCommandsInterface]
 
     _hiz_check_list: list[int]
 
     _always_high_mask: int
 
-    _ser = serial.Serial | None
+    _ser: serial.Serial | None
     
     _checkb_states: dict[int, IntVar]
     _pin_state_labels: dict[int, Label]
@@ -37,7 +38,7 @@ class MainWin(Frame):
 
     _RESET_BUTTON_STYLE = 'RESET.TButton'
 
-    def __init__(self, ic_definition: ICDefinition, board_commands: type[BoardCommands], check_hiz: bool = False, skip_hiz: list[int] = [],  ser: serial.Serial | None = None) -> None:
+    def __init__(self, ic_definition: ICDefinition, board_commands: type[BoardCommandsInterface], check_hiz: bool = False, skip_hiz: list[int] = [],  ser: serial.Serial | None = None) -> None:
         super().__init__()
 
         self._ic_definition = ic_definition
@@ -184,7 +185,7 @@ class MainWin(Frame):
         map_val: int = self._board_commands.map_value_to_pins(self._ic_definition.zif_map, val)
         map_val = map_val | self._always_high_mask
 
-        res_wr: int | None = self._board_commands.write_pins(self._ser, map_val)
+        res_wr: int | None = self._board_commands.write_pins(map_val, self._ser)
         if res_wr is None:
             raise SystemError('Read from the dupico failed')
 
@@ -231,9 +232,9 @@ class MainWin(Frame):
     def _cmd_powercycle(self) -> None:
         self._LOGGER.debug('Power cycling IC')
         
-        self._board_commands.set_power(self._ser, False)
+        self._board_commands.set_power(False, self._ser)
         time.sleep(0.5)
-        self._board_commands.set_power(self._ser, True)
+        self._board_commands.set_power(True, self._ser)
         time.sleep(0.5)
         self._cmd_set()
 

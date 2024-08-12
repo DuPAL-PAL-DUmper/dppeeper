@@ -12,7 +12,8 @@ from enum import Enum
 
 import serial
 
-from dupicolib.board_commands import BoardCommands
+from dupicolib.board_commands_interface import BoardCommandsInterface
+from dupicolib.hardware_board_commands import HardwareBoardCommands
 from dupicolib.board_command_class_factory import BoardCommandClassFactory
 from dupicolib.board_utilities import BoardUtilities
 from dupicolib.board_fw_version import FwVersionTools, FWVersionDict
@@ -127,7 +128,7 @@ def cli() -> int:
         _LOGGER.info('Quitting.')          
     return 0
 
-def start_ui(name: str, ic_definition: ICDefinition, command_class: type[BoardCommands], check_hiz: bool = False, skip_hiz: list[int] = [], ser: serial.Serial | None = None) -> None:
+def start_ui(name: str, ic_definition: ICDefinition, command_class: type[BoardCommandsInterface], check_hiz: bool = False, skip_hiz: list[int] = [], ser: serial.Serial | None = None) -> None:
     root: Tk = Tk()
     ico_data: bytes = files('resources').joinpath('ico.png').read_bytes()
     ico_img: PhotoImage = PhotoImage(data=ico_data)
@@ -159,7 +160,7 @@ def connect_command(port_name: str, baudrate: int, ic_definition: ICDefinition, 
             return -1
             
         _LOGGER.info(f'Board connected @{port_name}, speed:{baudrate} ...')
-        model: int | None = BoardCommands.get_model(ser_port)
+        model: int | None = HardwareBoardCommands.get_model(ser_port)
         if model is None:
             _LOGGER.critical('Unable to retrieve model number...')
             return -1
@@ -169,7 +170,7 @@ def connect_command(port_name: str, baudrate: int, ic_definition: ICDefinition, 
         else:
             _LOGGER.info(f'Model {model} detected!')
             
-        fw_version: str | None = BoardCommands.get_version(ser_port)
+        fw_version: str | None = HardwareBoardCommands.get_version(ser_port)
         fw_version_dict: FWVersionDict
         if fw_version is None:
             _LOGGER.critical('Unable to retrieve firmware version...')
@@ -182,15 +183,15 @@ def connect_command(port_name: str, baudrate: int, ic_definition: ICDefinition, 
             raise ValueError(f'Current hardware model {model} does not satisfy requirement {ic_definition.hw_model}')
 
         # Now we have enough information to obtain the class that handles commands specific for this board
-        command_class: type[BoardCommands] = BoardCommandClassFactory.get_command_class(model, fw_version_dict)
+        command_class: type[HardwareBoardCommands] = BoardCommandClassFactory.get_command_class(model, fw_version_dict)
 
         print(f'Analyzing IC {ic_definition.name}')
         if not skip_note and ic_definition.adapter_notes and bool(ic_definition.adapter_notes.strip()):
             print_note(ic_definition.adapter_notes)
 
         # Make sure that the required pins to be set are actually set, then power on
-        command_class.write_pins(ser_port, command_class.map_value_to_pins(ic_definition.adapter_hi_pins, 0xFFFFFFFFFFFFFFFF))
-        command_class.set_power(ser_port, True)
+        command_class.write_pins(command_class.map_value_to_pins(ic_definition.adapter_hi_pins, 0xFFFFFFFFFFFFFFFF), ser_port)
+        command_class.set_power(True, ser_port)
 
         # And finally, start the UI
         start_ui(f'{__name__} - {__version__}', ic_definition, command_class, check_hiz, skip_hiz, ser_port)
