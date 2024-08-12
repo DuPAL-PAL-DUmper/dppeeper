@@ -209,9 +209,21 @@ class MainWin(Frame):
             else:
                 v.configure(style=self._LO_LABEL_STYLE)
             
+    def _build_set_value(self) -> int:
+        val: int = 0
+
+        for k,v in self._checkb_states.items():
+            if bool(v.get()):
+                val = val | (1 << k)
+
+        return val
 
     def _cmd_set(self) -> None:
-        pass
+        read: int; hiz: int
+
+        set_val: int = self._build_set_value()
+        read, hiz = self._set_and_check_pins(set_val)
+        self._update_labels(read, hiz)
 
     def _cmd_read(self) -> None:
         pass
