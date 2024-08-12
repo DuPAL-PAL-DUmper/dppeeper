@@ -14,7 +14,7 @@ from dupicolib.board_commands import BoardCommands
 
 class MainWin(Frame):
     _ic_definition: ICDefinition
-    _board_commands: BoardCommands
+    _board_commands: type[BoardCommands]
 
     _hiz_check_list: list[int]
 
@@ -37,7 +37,7 @@ class MainWin(Frame):
 
     _RESET_BUTTON_STYLE = 'RESET.TButton'
 
-    def __init__(self, name: str, ic_definition: ICDefinition, board_commands: BoardCommands, check_hiz: bool = False, skip_hiz: list[int] = [],  ser: serial.Serial | None = None) -> None:
+    def __init__(self, ic_definition: ICDefinition, board_commands: type[BoardCommands], check_hiz: bool = False, skip_hiz: list[int] = [],  ser: serial.Serial | None = None) -> None:
         super().__init__()
 
         self._ic_definition = ic_definition
@@ -52,7 +52,7 @@ class MainWin(Frame):
         self._always_high_mask = self._board_commands.map_value_to_pins(self._ic_definition.adapter_hi_pins, 0xFFFFFFFFFFFFFFFF)
 
         self.buildStyles()
-        self.initUI(name)
+        self.initUI()
 
         # Send the first command to read the state
         self._cmd_set()
@@ -69,7 +69,7 @@ class MainWin(Frame):
 
         style.configure(self._RESET_BUTTON_STYLE, font=('Sans','10','bold'), foreground='red')        
 
-    def initUI(self, name: str) -> None:
+    def initUI(self) -> None:
         name_label = Label(self, text=self._ic_definition.name, anchor=CENTER, style=self._IC_NAME_LABEL_STYLE)
         name_label.pack(side=TOP, anchor=CENTER, fill=X)
 
@@ -110,7 +110,7 @@ class MainWin(Frame):
                 # Save the variables that store the state for checkboxes
                 chkb_var: IntVar = IntVar(value=0)
                 self._checkb_states[i] = chkb_var
-                gen_chk = Checkbutton(grid_frame, text=None, takefocus=False, variable=chkb_var)
+                gen_chk = Checkbutton(grid_frame, text='', takefocus=False, variable=chkb_var)
                 gen_chk.grid(row=c_y, column=c_x)
 
         button_frame = Frame(self, relief=RAISED, borderwidth=1, padding=5)
@@ -137,8 +137,6 @@ class MainWin(Frame):
 
 
         self.pack(fill=BOTH, expand=1)
-
-        self.master.title(name)
 
     def _set_and_check_pins(self, val: int) -> Tuple[int, int]:
         hiz_pins: int = 0
@@ -182,7 +180,7 @@ class MainWin(Frame):
 
         return mask
 
-    def _write_val(self, val: int) -> int | None:
+    def _write_val(self, val: int) -> int:
         map_val: int = self._board_commands.map_value_to_pins(self._ic_definition.zif_map, val)
         map_val = map_val | self._always_high_mask
 

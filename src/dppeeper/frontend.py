@@ -127,13 +127,16 @@ def cli() -> int:
         _LOGGER.info('Quitting.')          
     return 0
 
-def start_ui(name: str, ic_definition: ICDefinition, command_class: BoardCommands, check_hiz: bool = False, skip_hiz: list[int] = [], ser: serial.Serial | None = None) -> None:
+def start_ui(name: str, ic_definition: ICDefinition, command_class: type[BoardCommands], check_hiz: bool = False, skip_hiz: list[int] = [], ser: serial.Serial | None = None) -> None:
     root: Tk = Tk()
     ico_data: bytes = files('resources').joinpath('ico.png').read_bytes()
     ico_img: PhotoImage = PhotoImage(data=ico_data)
-    mw = MainWin(name=name, ic_definition=ic_definition, board_commands=command_class, check_hiz=check_hiz, skip_hiz=skip_hiz, ser=ser)
+    
+    mw = MainWin(ic_definition=ic_definition, board_commands=command_class, check_hiz=check_hiz, skip_hiz=skip_hiz, ser=ser)
     root.resizable(False, False)
+    root.title(name)
     root.wm_iconphoto(False, ico_img)
+
     root.mainloop()
 
 def sim_command(ic_definition: ICDefinition, skip_note: bool) -> None:
@@ -179,7 +182,7 @@ def connect_command(port_name: str, baudrate: int, ic_definition: ICDefinition, 
             raise ValueError(f'Current hardware model {model} does not satisfy requirement {ic_definition.hw_model}')
 
         # Now we have enough information to obtain the class that handles commands specific for this board
-        command_class: BoardCommands = BoardCommandClassFactory.get_command_class(model, fw_version_dict)
+        command_class: type[BoardCommands] = BoardCommandClassFactory.get_command_class(model, fw_version_dict)
 
         print(f'Analyzing IC {ic_definition.name}')
         if not skip_note and ic_definition.adapter_notes and bool(ic_definition.adapter_notes.strip()):
@@ -191,6 +194,8 @@ def connect_command(port_name: str, baudrate: int, ic_definition: ICDefinition, 
 
         # And finally, start the UI
         start_ui(f'{__name__} - {__version__}', ic_definition, command_class, check_hiz, skip_hiz, ser_port)
+
+        return 1
     finally:
         if ser_port and not ser_port.closed:
             _LOGGER.debug('Closing the serial port.')

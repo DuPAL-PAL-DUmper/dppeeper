@@ -26,9 +26,10 @@ class UIUtilities:
                 return (max(top_bottom) + 6, max(left_right) + 6)
             case _:
                 raise ValueError(f'Number of sides {len(pins_per_side)} is not supported')
-            
+
+    @staticmethod    
     def calculatePinPosition(pin_no: int, type: UIPinGridType, pins_per_side: list[int]) -> Tuple[int, int]:
-        grid_size: list[int] = UIUtilities.calculateGridSize(pins_per_side)
+        grid_size: Tuple[int, int] = UIUtilities.calculateGridSize(pins_per_side)
 
         if pin_no < 1:
             raise ValueError('Pin numbering begins at 1')
@@ -59,3 +60,5 @@ class UIUtilities:
                     return (2 + bottom_pin_no, pins_per_side[0] + 3 + shift)
                 else: # Left side
                     return (2 - shift, 2 + pin_no)
+            case _:
+                raise ValueError(f'Unsupported number of sides {len(pins_per_side)}')
