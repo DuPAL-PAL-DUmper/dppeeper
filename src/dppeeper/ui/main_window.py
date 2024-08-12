@@ -111,7 +111,7 @@ class MainWin(Frame):
                 # Save the variables that store the state for checkboxes
                 chkb_var: IntVar = IntVar(value=0)
                 self._checkb_states[i] = chkb_var
-                gen_chk = Checkbutton(grid_frame, text='', takefocus=False, variable=chkb_var)
+                gen_chk = Checkbutton(grid_frame, text='', takefocus=False, variable=chkb_var, state=('disabled' if (i+1) in self._ic_definition.clk_pins and (i+1) not in self._ic_definition.in_pins else 'normal'))
                 gen_chk.grid(row=c_y, column=c_x)
 
         button_frame = Frame(self, relief=RAISED, borderwidth=1, padding=5)
@@ -269,6 +269,7 @@ class MainWin(Frame):
         check_list.extend(ic_definition.o_pins)
         check_list.extend(ic_definition.io_pins)
         check_list.extend(ic_definition.q_pins)
+        check_list = list(set(check_list)) # Remove potential duplicates
         check_list.sort()
 
         return [i for i in check_list if i not in skip_hiz]
