@@ -37,6 +37,7 @@ class MainWin(Frame):
     _Z_LABEL_STYLE = 'Z.TLabel'
 
     _RESET_BUTTON_STYLE = 'RESET.TButton'
+    _CLK_BUTTON_STYLE = 'CLK.TButton'
 
     def __init__(self, ic_definition: ICDefinition, board_commands: type[BoardCommandsInterface], check_hiz: bool = False, skip_hiz: list[int] = [],  ser: serial.Serial | None = None) -> None:
         super().__init__()
@@ -69,6 +70,7 @@ class MainWin(Frame):
         style.configure(self._Z_LABEL_STYLE, background='#FFF4B7')
 
         style.configure(self._RESET_BUTTON_STYLE, font=('Sans','10','bold'), foreground='red')        
+        style.configure(self._CLK_BUTTON_STYLE, foreground='blue')        
 
     def initUI(self) -> None:
         name_label = Label(self, text=self._ic_definition.name, anchor=CENTER, style=self._IC_NAME_LABEL_STYLE)
@@ -96,13 +98,13 @@ class MainWin(Frame):
             pn_lbl.grid(row=n_y, column=n_x)
 
             if pin == 21: # GND pins
-                gnd_lbl = Label(grid_frame, text='GND', width = 6, anchor=CENTER, style=self._POWER_LABEL_STYLE)
+                gnd_lbl = Label(grid_frame, text='GND', width = 10, anchor=CENTER, style=self._POWER_LABEL_STYLE)
                 gnd_lbl.grid(row=l_y, column=l_x)
             elif pin == 42: # Power pins
-                pwr_lbl = Label(grid_frame, text='PWR', width = 6, anchor=CENTER, style=self._POWER_LABEL_STYLE)
+                pwr_lbl = Label(grid_frame, text='PWR', width = 10, anchor=CENTER, style=self._POWER_LABEL_STYLE)
                 pwr_lbl.grid(row=l_y, column=l_x)
             else:
-                gen_lbl = Label(grid_frame, text=self._ic_definition.pin_names[i], width = 6, anchor=CENTER, style=self._LO_LABEL_STYLE)
+                gen_lbl = Label(grid_frame, text=self._ic_definition.pin_names[i], width = 10, anchor=CENTER, style=self._LO_LABEL_STYLE)
                 gen_lbl.grid(row=l_y, column=l_x)
                 # Save the labels that represent the state of pins, we're also saving GND and power pins, to make sure
                 # the index value for the label matches the pin number
@@ -121,11 +123,11 @@ class MainWin(Frame):
         clock_button_frame.pack(side=TOP, anchor=CENTER, fill=X)
         
         for i, clk_pin in enumerate(self._ic_definition.clk_pins):
-            clk_button = Button(clock_button_frame, text=f'Clock {clk_pin}', command=lambda: self._cmd_clock(clk_pin))
+            clk_button = Button(clock_button_frame, text=f'Clock {clk_pin}', command=lambda: self._cmd_clock(clk_pin), style=self._CLK_BUTTON_STYLE)
             clk_button.pack(anchor=CENTER, side=LEFT, padx=5, pady=5)
 
         control_button_frame = Frame(button_frame)
-        control_button_frame.pack(side=TOP, anchor=CENTER, fill=X)
+        control_button_frame.pack(side=TOP, anchor=CENTER)
 
         set_button = Button(control_button_frame, text='SET', command=self._cmd_set)
         set_button.pack(anchor=CENTER, side=LEFT, padx=5, pady=5)
