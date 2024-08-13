@@ -61,10 +61,16 @@ class ICDefinition:
                 pin_names[pin-1] = f'Q{pin}'
         
         for pin in oe_h_pins:
-            pin_names[pin-1] = 'OE'
+            if len(pin_names[pin-1]) > 0:
+                pin_names[pin-1] = pin_names[pin-1] + 'OE'
+            else:
+                pin_names[pin-1] = 'OE'
         
         for pin in oe_l_pins:
-            pin_names[pin-1] = '/OE'
+            if len(pin_names[pin-1]) > 0:
+                pin_names[pin-1] = pin_names[pin-1] + '/!OE'
+            else:
+                pin_names[pin-1] = '!OE'
 
         return pin_names
 
