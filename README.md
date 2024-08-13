@@ -53,10 +53,19 @@ The PLD definitions must be provided in TOML format and are structured as follow
 ### Files sections
 
 #### Root Section
-** TODO **
+- `name`: A string containing the name for this PLD
 
 #### Pinout section \[pinout\]
-** TODO **
+- `pins_per_side`: array of integers that define both the number of sides for the IC (length of the array, 1, 2 or 4 are supported), and the number of pins per side
+- `ZIF_map`: array of integers, with one entry for each pin of the IC, describing how the pins are mapped to the ZIF42 of the dupico. If a pin is mapped to 21, it corresponds to a GND, to 42, it corresponds to a generic power supply.
+- `clk_pins`: array of integers that indicates which pins of the PLD can be used as clock inputs.
+- `in_pins`: array of integers that indicates which pins of the PLD can be used as inputs.
+- `io_pins`: array of integers that indicates which pins of the PLD can be used as i/o pins.
+- `o_pins`: array of integers that indicates which pins of the PLD are used as output pins.
+- `f_pins`: array of integers that indicates which pins of the PLD can act as an internal feedback. This information is not used by dppeeper.
+- `q_pins`: array of integers that indicates which pins of the PLD can act as a registered output.
+- `oe_l_pins`: array of integers that indicates which pins of the PLD can act a active-low output enables
+- `oe_h_pins`: array of integers that indicates which pins of the PLD can act a active-high output enables
 
 #### Adapter section \[adapter\]
 This section contains configuration for adapters plugged in the ZIF socket, that may use additional pins to toggle some functionality.
