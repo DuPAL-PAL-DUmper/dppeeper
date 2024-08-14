@@ -17,6 +17,7 @@ class ICLoader:
     _KEY_PINOUT_IOP: str = 'io_pins'
     _KEY_PINOUT_OP: str = 'o_pins'
     _KEY_PINOUT_FP: str = 'f_pins'
+    _KEY_PINOUT_HIZ_O: str = 'hiz_o_pins'
     _KEY_PINOUT_QP: str = 'q_pins'
     _KEY_PINOUT_OEH: str = 'oe_h_pins'
     _KEY_PINOUT_OEL: str = 'oe_l_pins'
@@ -39,6 +40,7 @@ class ICLoader:
                                 io_pins=toml_data[cls._KEY_PINOUT][cls._KEY_PINOUT_IOP],
                                 o_pins=toml_data[cls._KEY_PINOUT][cls._KEY_PINOUT_OP],
                                 f_pins=toml_data[cls._KEY_PINOUT][cls._KEY_PINOUT_FP],
+                                hiz_o_pins=toml_data[cls._KEY_PINOUT][cls._KEY_PINOUT_HIZ_O],
                                 q_pins=toml_data[cls._KEY_PINOUT][cls._KEY_PINOUT_QP],
                                 oe_l_pins=toml_data[cls._KEY_PINOUT][cls._KEY_PINOUT_OEL],
                                 oe_h_pins=toml_data[cls._KEY_PINOUT][cls._KEY_PINOUT_OEH],

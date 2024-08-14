@@ -19,6 +19,7 @@ class ICDefinition:
     o_pins: list[int]
     f_pins: list[int]
     q_pins: list[int]
+    hiz_o_pins: list[int]
     oe_l_pins: list[int]
     oe_h_pins: list[int]
 
@@ -83,6 +84,7 @@ class ICDefinition:
                  io_pins: list[int],
                  o_pins: list[int],
                  f_pins: list[int],
+                 hiz_o_pins: list[int],
                  q_pins: list[int],
                  oe_l_pins: list[int],
                  oe_h_pins: list[int],
@@ -100,6 +102,7 @@ class ICDefinition:
         self.io_pins = io_pins
         self.o_pins = o_pins
         self.f_pins = f_pins
+        self.hiz_o_pins = hiz_o_pins
         self.q_pins = q_pins
         self.oe_h_pins = oe_h_pins
         self.oe_l_pins = oe_l_pins

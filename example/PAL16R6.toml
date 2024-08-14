@@ -35,6 +35,12 @@ oe_l_pins = [11]
 # List of the pins that are active high OE
 oe_h_pins = []
 
+# List of the pins, as numbered on the IC, that can be used as feedback pins
+f_pins = [12, 13, 14, 15, 16, 17, 18, 19]
+
+# List of the output pins, as numbered on the IC, capable of going HI-Z
+hiz_o_pins = [12, 13, 14, 15, 16, 17, 18, 19]
+
 [adapter]
 # pins that need to be forced high to read this in the adapter
 hi_pins = [22]

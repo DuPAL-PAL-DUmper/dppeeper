@@ -63,6 +63,7 @@ The PLD definitions must be provided in TOML format and are structured as follow
 - `io_pins`: array of integers that indicates which pins of the PLD can be used as i/o pins.
 - `o_pins`: array of integers that indicates which pins of the PLD are used as output pins.
 - `f_pins`: array of integers that indicates which pins of the PLD can act as an internal feedback. This information is not used by dppeeper.
+- `hiz_o_pins`: array of integers that indicates which pins of the PLD that are normally outputs or i/o, but that can go Hi-Z and must be checked.
 - `q_pins`: array of integers that indicates which pins of the PLD can act as a registered output.
 - `oe_l_pins`: array of integers that indicates which pins of the PLD can act a active-low output enables
 - `oe_h_pins`: array of integers that indicates which pins of the PLD can act a active-high output enables
