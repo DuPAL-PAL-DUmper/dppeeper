@@ -23,9 +23,6 @@ io_pins = [12, 19]
 # List of the pins, as numbered on the IC, that are output only
 o_pins = []
 
-# List of the pins, as numbered on the IC, that can be used as feedback pins
-f_pins = [12, 13, 14, 15, 16, 17, 18, 19]
-
 # List of the pins, as numbered on the IC, that are registered outputs
 q_pins = [13, 14, 15, 16, 17, 18]
 
