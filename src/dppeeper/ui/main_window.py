@@ -234,6 +234,9 @@ class MainWin(Frame):
     def _cmd_powercycle(self) -> None:
         self._LOGGER.debug('Power cycling IC')
         
+        # Write the last data before powercycling
+        self._cmd_set()
+
         self._board_commands.set_power(False, self._ser)
         time.sleep(0.5)
         self._board_commands.set_power(True, self._ser)
