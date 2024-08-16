@@ -1,0 +1,49 @@
+# Example of a definition for a PAL12x6
+
+name = "PAL12x6"
+
+[pinout]
+# Defines both package structure and number of pins for each side. L, R, in order.
+pins_per_side = [10, 10]
+
+# List of all the pins of the IC, from 1 onward, as mapped on the ZIF42 socket of the dupico
+# note that, in this list, 21 is a placeholder for GND, 42 a placeholder for a power source (which could be 5V or different).
+# These are used to properly draw the map on the interface
+ZIF_map = [3, 4, 5, 6, 7, 8, 9, 10, 11, 21, 31, 32, 33, 34, 35, 36, 37, 38, 39, 42]
+
+# List of the pins, as numbered on the IC, that can be used as clock inputs
+clk_pins = []
+
+# List of the pins, as numbered on the IC, that are input only pins
+in_pins = [1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 12, 19]
+
+# List of the pins, as numbered on the IC, that are I/O pins (can be configured as inputs or outputs)
+io_pins = []
+
+# List of the pins, as numbered on the IC, that are output only
+o_pins = [13, 14, 15, 16, 17, 18]
+
+# List of the pins, as numbered on the IC, that are registered outputs
+q_pins = []
+
+# List of the pins that are active low OE
+oe_l_pins = []
+
+# List of the pins that are active high OE
+oe_h_pins = []
+
+# List of the pins, as numbered on the IC, that can be used as feedback pins
+f_pins = []
+
+# List of the output pins, as numbered on the IC, capable of going HI-Z
+hiz_o_pins = []
+
+[adapter]
+# pins that need to be forced high to read this in the adapter
+hi_pins = [22]
+# Notes on the adapter necessary to read this IC
+notes = "Insert the PAL POD in the dupico, topmost position in socket, and insert the PAL in the bottom of the ZIF24 socket."
+
+[requirements]
+hardware = 3
+
