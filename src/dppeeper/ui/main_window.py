@@ -35,6 +35,7 @@ class MainWin(Frame):
     _HI_LABEL_STYLE = 'HI.TLabel'
     _LO_LABEL_STYLE = 'LO.TLabel'
     _Z_LABEL_STYLE = 'Z.TLabel'
+    _OSC_LABEL_STYLE = 'OSC.TLabel'
 
     _RESET_BUTTON_STYLE = 'RESET.TButton'
     _CLK_BUTTON_STYLE = 'CLK.TButton'
@@ -68,6 +69,7 @@ class MainWin(Frame):
         style.configure(self._HI_LABEL_STYLE, background='#B7FFB7')
         style.configure(self._LO_LABEL_STYLE, background='#FFB7B7')
         style.configure(self._Z_LABEL_STYLE, background='#FFF4B7')
+        style.configure(self._OSC_LABEL_STYLE, background='#F597FF')
 
         style.configure(self._RESET_BUTTON_STYLE, font=('Sans','10','bold'), foreground='red')        
         style.configure(self._CLK_BUTTON_STYLE, foreground='blue')        
@@ -192,21 +194,33 @@ class MainWin(Frame):
             raise SystemError('Read from the dupico failed')
 
         return self._board_commands.map_pins_to_value(self._ic_definition.zif_map, res_wr)
+    
+    def _check_osc_pins(self) -> int:
+        osc_pins: int | None = self._board_commands.detect_osc_pins(255, self._ser)
 
-    def _update_labels(self, read_val: int, hiz_val: int) -> None:
+        if osc_pins is None:
+            raise SystemError('Read from the dupico failed')
+
+        return self._board_commands.map_pins_to_value(self._ic_definition.zif_map, osc_pins)
+
+    def _update_labels(self, read_val: int, hiz_val: int, osc_val: int) -> None:
         """
         Update the state labels of each pin according to the value read
 
         Args:
             read_val (int): value read from the dupico, already remapped (e.g. bit 0 corresponds to pin 1 of the IC)
             hiz_val (int): if a bit is 1 in this map, it means the pin is hi-z
+            osc_val (int): if a bit is 1 in this map, it means the pin is oscillating between high and low
         """        
         for k,v in self._pin_state_labels.items():
             state: bool = ((read_val >> k) & 0x01) == 1
             hiz: bool = ((hiz_val >> k) & 0x01) == 1
+            osc: bool = ((osc_val >> k) & 0x01) == 1
 
             if hiz:
                 v.configure(style=self._Z_LABEL_STYLE)
+            elif osc:
+                v.configure(style=self._OSC_LABEL_STYLE)
             elif state:
                 v.configure(style=self._HI_LABEL_STYLE)
             else:
@@ -222,14 +236,16 @@ class MainWin(Frame):
         return val
 
     def _cmd_set(self) -> None:
-        read: int; hiz: int
+        read: int; hiz: int; osc: int
 
         set_val: int = self._build_set_value()
         
         self._LOGGER.debug(f'Setting {set_val:0{16}X}')
         
         read, hiz = self._set_and_check_pins(set_val)
-        self._update_labels(read, hiz)
+        osc = self._check_osc_pins()
+
+        self._update_labels(read, hiz, osc)
 
     def _cmd_powercycle(self) -> None:
         self._LOGGER.debug('Power cycling IC')
@@ -254,7 +270,7 @@ class MainWin(Frame):
     def _cmd_clock(self, pin: int) -> None:
         self._LOGGER.debug(f'Toggling clock {pin}')
         
-        read: int; hiz: int
+        read: int; hiz: int; osc: int
 
         # Start with clearing the pin checkbox we'll use for the clock
         self._checkb_states[pin - 1].set(0)
@@ -265,7 +281,10 @@ class MainWin(Frame):
         self._write_val(set_val)
         self._write_val(set_val_clk)
         read, hiz = self._set_and_check_pins(set_val)
-        self._update_labels(read, hiz)
+
+        osc = self._check_osc_pins()
+
+        self._update_labels(read, hiz, osc)
 
     @staticmethod
     def _generate_hiz_check_list(ic_definition: ICDefinition, skip_hiz: list[int] = []) -> list[int]:

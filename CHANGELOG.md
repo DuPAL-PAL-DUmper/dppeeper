@@ -1,5 +1,8 @@
 # Changelog
 Changelog for the dppeeper utility
+## [0.0.4] - 2024-08-15
+### Added
+- Attempt to check for oscillating pins and color the label purplish if found
 
 ## [0.0.3] - 2024-08-15
 ### Fixed
