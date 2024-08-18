@@ -69,3 +69,14 @@ def test_QUAD_grid_position_calculation():
     assert UIUtilities.calculatePinPosition(pin_no = 39, type = UIPinGridType.LABEL, pins_per_side = [14, 10, 14, 10]) == (12, 2)
     assert UIUtilities.calculatePinPosition(pin_no = 48, type = UIPinGridType.CHECKBOX, pins_per_side = [14, 10, 14, 10]) == (3, 1)
     assert UIUtilities.calculatePinPosition(pin_no = 48, type = UIPinGridType.LABEL, pins_per_side = [14, 10, 14, 10]) == (3, 2)
+
+def test_grid_position_rotation_calculation():
+    assert UIUtilities.calculatePinPosition(pin_no = 1, type = UIPinGridType.CHECKBOX, pins_per_side = [14, 10, 14, 10], rot_shift=1) == (1, 4)
+    assert UIUtilities.calculatePinPosition(pin_no = 14, type = UIPinGridType.CHECKBOX, pins_per_side = [14, 10, 14, 10], rot_shift=1) == (3, 18)
+    assert UIUtilities.calculatePinPosition(pin_no = 1, type = UIPinGridType.LABEL, pins_per_side = [14, 10, 14, 10], rot_shift=1) == (2, 4)
+    assert UIUtilities.calculatePinPosition(pin_no = 14, type = UIPinGridType.LABEL, pins_per_side = [14, 10, 14, 10], rot_shift=1) == (3, 17)
+
+    assert UIUtilities.calculatePinPosition(pin_no = 1, type = UIPinGridType.CHECKBOX, pins_per_side = [14, 10, 14, 10], rot_shift=-1) == (3, 1)
+    assert UIUtilities.calculatePinPosition(pin_no = 14, type = UIPinGridType.CHECKBOX, pins_per_side = [14, 10, 14, 10], rot_shift=-1) == (1, 15)
+    assert UIUtilities.calculatePinPosition(pin_no = 1, type = UIPinGridType.LABEL, pins_per_side = [14, 10, 14, 10], rot_shift=-1) == (3, 2)
+    assert UIUtilities.calculatePinPosition(pin_no = 14, type = UIPinGridType.LABEL, pins_per_side = [14, 10, 14, 10], rot_shift=-1) == (2, 15)
