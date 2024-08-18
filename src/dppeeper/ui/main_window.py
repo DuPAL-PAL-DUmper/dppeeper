@@ -84,9 +84,9 @@ class MainWin(Frame):
         grid_frame = Frame(self)
         grid_frame.pack(side=TOP, anchor=CENTER)
         for col in range(0, grid_w):
-            grid_frame.columnconfigure(col, pad=15)
+            grid_frame.columnconfigure(col, pad=10)
         for row in range(0, grid_h):
-            grid_frame.rowconfigure(row, pad=10)
+            grid_frame.rowconfigure(row, pad=6)
         
         for i, pin in enumerate(self._ic_definition.zif_map):
             l_x: int; l_y: int
@@ -116,10 +116,16 @@ class MainWin(Frame):
                 self._pin_state_labels[i] = gen_lbl
                 
                 # Save the variables that store the state for checkboxes
+                # All this fuckery with the empty label is to try and slightly
+                # center checkbuttons that are organized horizontally
                 chkb_var: IntVar = IntVar(value=0)
                 self._checkb_states[i] = chkb_var
-                gen_chk = Checkbutton(grid_frame, text='', takefocus=False, variable=chkb_var, state=('disabled' if (i+1) in self._ic_definition.clk_pins and (i+1) not in self._ic_definition.in_pins else 'normal'))
-                gen_chk.grid(row=c_y, column=c_x)
+                inner_grid_frame = Frame(grid_frame) # Use an inner frame to put a dummy label and the checkbutton in
+                empty_label = Label(inner_grid_frame, text='')
+                empty_label.pack(anchor=CENTER, side=LEFT, padx=1)
+                gen_chk = Checkbutton(inner_grid_frame, text='', takefocus=False, variable=chkb_var, state=('disabled' if (i+1) in self._ic_definition.clk_pins and (i+1) not in self._ic_definition.in_pins else 'normal'))
+                gen_chk.pack(anchor=CENTER, side=LEFT)
+                inner_grid_frame.grid(row=c_y, column=c_x)
 
         button_frame = Frame(self, relief=RAISED, borderwidth=1, padding=5)
         button_frame.pack(fill=BOTH, expand=True, side=TOP, anchor=CENTER)
