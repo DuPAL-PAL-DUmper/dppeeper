@@ -3,6 +3,9 @@
 name = "GAL22V10_PLCC"
 
 [pinout]
+# Optional pin rotation, positive is clockwise, negative is counterclockwise
+rot_shift = -4
+
 # Defines both package structure and number of pins for each side. L, R, in order.
 pins_per_side = [7, 7, 7, 7]
 

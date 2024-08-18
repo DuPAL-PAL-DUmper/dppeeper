@@ -23,6 +23,8 @@ class ICDefinition:
     oe_l_pins: list[int]
     oe_h_pins: list[int]
 
+    pin_rot_shift: int
+
     adapter_hi_pins: list[int]
     hw_model: int
     adapter_notes: str | None = None
@@ -90,6 +92,7 @@ class ICDefinition:
                  oe_h_pins: list[int],
                  adapter_hi_pins: list[int],
                  hw_model: int,
+                 pin_rot_shift: int = 0,
                  adapter_notes: str | None = None):
         
         self.name = name
@@ -109,6 +112,8 @@ class ICDefinition:
 
         self.adapter_notes = adapter_notes
         self.adapter_hi_pins = adapter_hi_pins
+
+        self.pin_rot_shift = pin_rot_shift
 
         self.pin_names = self._build_pin_names(zif_map, in_pins, io_pins, o_pins, clk_pins, q_pins, oe_l_pins, oe_h_pins)
 

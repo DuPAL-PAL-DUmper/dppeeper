@@ -28,14 +28,22 @@ class UIUtilities:
                 raise ValueError(f'Number of sides {len(pins_per_side)} is not supported')
 
     @staticmethod    
-    def calculatePinPosition(pin_no: int, type: UIPinGridType, pins_per_side: list[int]) -> Tuple[int, int]:
+    def calculatePinPosition(pin_no: int, type: UIPinGridType, pins_per_side: list[int], rot_shift: int = 0) -> Tuple[int, int]:
         grid_size: Tuple[int, int] = UIUtilities.calculateGridSize(pins_per_side)
+        tot_pins: int = sum(pins_per_side)
 
         if pin_no < 1:
             raise ValueError('Pin numbering begins at 1')
 
-        if pin_no > sum(pins_per_side):
-            raise ValueError(f'Pin structure does not fit pin number {pin_no}. Max pin is {sum(pins_per_side)}.')
+        if pin_no > tot_pins:
+            raise ValueError(f'Pin structure does not fit pin number {pin_no}. Max pin is {tot_pins}.')
+
+        # We implement the rotation by simply subtracting or adding to the original pin number
+        pin_no = pin_no + rot_shift
+        if pin_no < 1:
+            pin_no = tot_pins + pin_no
+        elif pin_no > tot_pins:
+            pin_no = pin_no - tot_pins
 
         shift: int = 0 if type == UIPinGridType.LABEL else (1 if type == UIPinGridType.CHECKBOX else 2)
         match len(pins_per_side):
