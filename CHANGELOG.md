@@ -3,6 +3,7 @@ Changelog for the dppeeper utility
 ## [0.0.5] - 2024-08-18
 ### Added
 - Support for 'NC' pins in mapping
+- Support for optional pin "rotation shift" in mapping, as to orientate the labels properly (especially for qfp or PLCC)
 
 ### Changed
 - Depdends on dupicolib >= 0.4.2
