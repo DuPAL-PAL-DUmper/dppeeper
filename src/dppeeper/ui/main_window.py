@@ -31,7 +31,7 @@ class MainWin(Frame):
     _IC_NAME_LABEL_STYLE = 'ICNAME.TLabel'
 
     _PINNUM_LABEL_STYLE = 'PINN.TLabel'
-    _POWER_LABEL_STYLE = 'PWR.TLabel'
+    _INACT_LABEL_STYLE = 'INACT.TLabel'
     _HI_LABEL_STYLE = 'HI.TLabel'
     _LO_LABEL_STYLE = 'LO.TLabel'
     _Z_LABEL_STYLE = 'Z.TLabel'
@@ -65,7 +65,7 @@ class MainWin(Frame):
 
         style.configure(self._IC_NAME_LABEL_STYLE, font=('Arial', '16', 'bold'))
         style.configure(self._PINNUM_LABEL_STYLE)
-        style.configure(self._POWER_LABEL_STYLE, background='#AAAAAA')
+        style.configure(self._INACT_LABEL_STYLE, background='#AAAAAA')
         style.configure(self._HI_LABEL_STYLE, background='#B7FFB7')
         style.configure(self._LO_LABEL_STYLE, background='#FFB7B7')
         style.configure(self._Z_LABEL_STYLE, background='#FFF4B7')
@@ -100,11 +100,14 @@ class MainWin(Frame):
             pn_lbl.grid(row=n_y, column=n_x)
 
             if pin == 21: # GND pins
-                gnd_lbl = Label(grid_frame, text='GND', width = 10, anchor=CENTER, style=self._POWER_LABEL_STYLE)
+                gnd_lbl = Label(grid_frame, text='GND', width = 10, anchor=CENTER, style=self._INACT_LABEL_STYLE)
                 gnd_lbl.grid(row=l_y, column=l_x)
             elif pin == 42: # Power pins
-                pwr_lbl = Label(grid_frame, text='PWR', width = 10, anchor=CENTER, style=self._POWER_LABEL_STYLE)
+                pwr_lbl = Label(grid_frame, text='PWR', width = 10, anchor=CENTER, style=self._INACT_LABEL_STYLE)
                 pwr_lbl.grid(row=l_y, column=l_x)
+            elif pin == 0: # NC pins
+                nc_lbl = Label(grid_frame, text='NC', width = 10, anchor=CENTER, style=self._INACT_LABEL_STYLE)
+                nc_lbl.grid(row=l_y, column=l_x)                
             else:
                 gen_lbl = Label(grid_frame, text=self._ic_definition.pin_names[i], width = 10, anchor=CENTER, style=self._LO_LABEL_STYLE)
                 gen_lbl.grid(row=l_y, column=l_x)

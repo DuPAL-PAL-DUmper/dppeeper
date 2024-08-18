@@ -1,5 +1,12 @@
 # Changelog
 Changelog for the dppeeper utility
+## [0.0.5] - 2024-08-18
+### Added
+- Support for 'NC' pins in mapping
+
+### Changed
+- Depdends on dupicolib >= 0.4.2
+
 ## [0.0.4] - 2024-08-15
 ### Added
 - Attempt to check for oscillating pins and color the label purplish if found
