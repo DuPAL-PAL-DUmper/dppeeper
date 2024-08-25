@@ -1,7 +1,7 @@
 """This module contains code for the main window"""
 
 import logging
-from typing import Tuple, cast
+from typing import Callable, Tuple
 import time
 
 from tkinter import BOTH, CENTER, LEFT, RAISED, TOP, X, IntVar, ttk
@@ -134,7 +134,8 @@ class MainWin(Frame):
         clock_button_frame.pack(side=TOP, anchor=CENTER, fill=X)
         
         for i, clk_pin in enumerate(self._ic_definition.clk_pins):
-            clk_button = Button(clock_button_frame, text=f'Clock {clk_pin}', command=lambda: self._cmd_clock(clk_pin), style=self._CLK_BUTTON_STYLE)
+            command = self._build_clock_command(clk_pin)
+            clk_button = Button(clock_button_frame, text=f'Clock {clk_pin}', command=command, style=self._CLK_BUTTON_STYLE)
             clk_button.pack(anchor=CENTER, side=LEFT, padx=5, pady=5)
 
         control_button_frame = Frame(button_frame)
@@ -275,6 +276,13 @@ class MainWin(Frame):
             v.set(0)
 
         self._cmd_set()
+
+    def _build_clock_command(self, pin: int) -> Callable[[], None]:
+        def clock_pin() -> None:
+            self._cmd_clock(pin)
+
+        return clock_pin
+
 
     def _cmd_clock(self, pin: int) -> None:
         self._LOGGER.debug(f'Toggling clock {pin}')

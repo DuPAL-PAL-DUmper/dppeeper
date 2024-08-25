@@ -1,5 +1,10 @@
 # Changelog
 Changelog for the dppeeper utility
+
+## [0.0.6] - 2024-08-25
+### Fixed
+- When using multiple clock buttons, now each button toggles the correct clock
+
 ## [0.0.5] - 2024-08-18
 ### Added
 - Support for 'NC' pins in mapping
