@@ -88,6 +88,10 @@ class MainWin(Frame):
         for row in range(0, grid_h):
             grid_frame.rowconfigure(row, pad=6)
         
+
+        # Calculate pin label width so we can fit custom names
+        pin_label_width: int = self._calculate_pinlabel_width(self._ic_definition.pin_names)  
+
         for i, pin in enumerate(self._ic_definition.zif_map):
             l_x: int; l_y: int
             c_x: int; c_y: int
@@ -100,16 +104,16 @@ class MainWin(Frame):
             pn_lbl.grid(row=n_y, column=n_x)
 
             if pin == 21: # GND pins
-                gnd_lbl = Label(grid_frame, text='GND', width = 10, anchor=CENTER, style=self._INACT_LABEL_STYLE)
+                gnd_lbl = Label(grid_frame, text='GND', width = pin_label_width, anchor=CENTER, style=self._INACT_LABEL_STYLE)
                 gnd_lbl.grid(row=l_y, column=l_x)
             elif pin == 42: # Power pins
-                pwr_lbl = Label(grid_frame, text='PWR', width = 10, anchor=CENTER, style=self._INACT_LABEL_STYLE)
+                pwr_lbl = Label(grid_frame, text='PWR', width = pin_label_width, anchor=CENTER, style=self._INACT_LABEL_STYLE)
                 pwr_lbl.grid(row=l_y, column=l_x)
             elif pin == 0: # NC pins
-                nc_lbl = Label(grid_frame, text='NC', width = 10, anchor=CENTER, style=self._INACT_LABEL_STYLE)
+                nc_lbl = Label(grid_frame, text='NC', width = pin_label_width, anchor=CENTER, style=self._INACT_LABEL_STYLE)
                 nc_lbl.grid(row=l_y, column=l_x)                
             else:
-                gen_lbl = Label(grid_frame, text=self._ic_definition.pin_names[i], width = 10, anchor=CENTER, style=self._LO_LABEL_STYLE)
+                gen_lbl = Label(grid_frame, text=self._ic_definition.pin_names[i], width = pin_label_width, anchor=CENTER, style=self._LO_LABEL_STYLE)
                 gen_lbl.grid(row=l_y, column=l_x)
                 # Save the labels that represent the state of pins, we're also saving GND and power pins, to make sure
                 # the index value for the label matches the pin number
@@ -310,3 +314,7 @@ class MainWin(Frame):
         check_list.sort()
 
         return [i for i in check_list if i not in skip_hiz]
+    
+    @staticmethod
+    def _calculate_pinlabel_width(pin_names: list[str]) -> int:
+        return max([len(name) for name in pin_names]) + 3

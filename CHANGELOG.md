@@ -1,6 +1,11 @@
 # Changelog
 Changelog for the dppeeper utility
 
+## [0.0.7] - 2024-08-25
+### Added
+- Allow the TOML to specify pin naming override with the `names_override` optional entry
+- Add pin number for CLK pins
+
 ## [0.0.6] - 2024-08-25
 ### Fixed
 - When using multiple clock buttons, now each button toggles the correct clock

@@ -12,6 +12,7 @@ class ICLoader:
     _KEY_PINOUT: str = 'pinout'
     _KEY_PINOUT_PINS_PER_SIDE = 'pins_per_side'
     _KEY_PINOUT_ZIFMAP:str = 'ZIF_map'
+    _KEY_PINOUT_NAMES_OVERRIDE = 'names_override'
     _KEY_PINOUT_CLKP:str = 'clk_pins'
     _KEY_PINOUT_INP:str = 'in_pins'
     _KEY_PINOUT_IOP: str = 'io_pins'
@@ -47,4 +48,5 @@ class ICLoader:
                                 hw_model=toml_data[cls._KEY_REQUIREMENTS][cls._KEY_REQUIREMENTS_HARDWARE],
                                 adapter_hi_pins=toml_data[cls._KEY_ADAPTER][cls._KEY_ADAPTER_HI_PINS],
                                 pin_rot_shift=toml_data[cls._KEY_PINOUT].get(cls._KEY_PINOUT_ROT_SHIFT, 0),
-                                adapter_notes=toml_data[cls._KEY_ADAPTER].get(cls._KEY_ADAPTER_NOTES, None))
+                                adapter_notes=toml_data[cls._KEY_ADAPTER].get(cls._KEY_ADAPTER_NOTES, None),
+                                pin_names_override=toml_data[cls._KEY_PINOUT].get(cls._KEY_PINOUT_NAMES_OVERRIDE, []))

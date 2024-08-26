@@ -16,6 +16,14 @@ def test_16L8_pin_names(pin_list_zif_map_16L8, pin_list_in_16L8, pin_list_io_16L
             'I9', 'G', 'I11', 'O12',
             'IO13', 'IO14', 'IO15', 'IO16',
             'IO17', 'IO18', 'O19', 'P'] == pin_names
+    
+def test_16L8_pin_names_override(pin_list_zif_map_16L8, pin_list_in_16L8, pin_list_io_16L8, pin_list_o_16L8):
+    pin_names: list[str] = ICDefinition._build_pin_names(zif_map=pin_list_zif_map_16L8, clk_pins=[], in_pins=pin_list_in_16L8, io_pins=pin_list_io_16L8, o_pins=pin_list_o_16L8, q_pins=[], oe_h_pins=[], oe_l_pins=[], pin_names_override=['', '', 'test', 'blargh', '', 'bofh'])
+    assert ['I1', 'I2', 'test', 'blargh',
+            'I5', 'bofh', 'I7', 'I8',
+            'I9', 'G', 'I11', 'O12',
+            'IO13', 'IO14', 'IO15', 'IO16',
+            'IO17', 'IO18', 'O19', 'P'] == pin_names
 
 def test_PAL16L8_Definition(ic_definition_PAL16L8):
     assert len(ic_definition_PAL16L8.pin_names) == 20

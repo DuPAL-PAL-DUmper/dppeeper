@@ -11,6 +11,7 @@ class ICDefinition:
     
     zif_map: list[int]
 
+    pin_names_override: list[str]
     pin_names: list[str]
 
     clk_pins: list[int]
@@ -39,7 +40,7 @@ class ICDefinition:
         return remapped
 
     @staticmethod
-    def _build_pin_names(zif_map: list[int], in_pins: list[int], io_pins: list[int], o_pins: list[int], clk_pins: list[int], q_pins: list[int], oe_l_pins: list[int], oe_h_pins: list[int]) -> list[str]:
+    def _build_pin_names(zif_map: list[int], in_pins: list[int], io_pins: list[int], o_pins: list[int], clk_pins: list[int], q_pins: list[int], oe_l_pins: list[int], oe_h_pins: list[int], pin_names_override: list[str] = []) -> list[str]:
         pin_names: list[str] = [('P' if pin == 42 else ('G' if pin == 21 else '')) for pin in zif_map]
 
         for pin in in_pins:
@@ -55,7 +56,7 @@ class ICDefinition:
             if len(pin_names[pin-1]) > 0:
                 pin_names[pin-1] = pin_names[pin-1] + '/CLK'
             else:
-                pin_names[pin-1] = 'CLK'
+                pin_names[pin-1] = f'CLK{pin}'
 
         for pin in q_pins:
             if len(pin_names[pin-1]) > 0:
@@ -75,6 +76,14 @@ class ICDefinition:
             else:
                 pin_names[pin-1] = '!OE'
 
+        if len(pin_names_override) > len(pin_names):
+            raise ValueError(f'Length ({len(pin_names_override)}) of overridden pin names array is higher than number of pins {len(pin_names)}')
+
+        # Override pin names where specified
+        for i, name in enumerate(pin_names_override):
+            if len(strp_name := name.strip()):
+                pin_names[i] = strp_name
+
         return pin_names
 
     def __init__(self,
@@ -93,7 +102,8 @@ class ICDefinition:
                  adapter_hi_pins: list[int],
                  hw_model: int,
                  pin_rot_shift: int = 0,
-                 adapter_notes: str | None = None):
+                 adapter_notes: str | None = None,
+                 pin_names_override: list[str] = []):
         
         self.name = name
         self.pins_per_side = pins_per_side
@@ -115,7 +125,7 @@ class ICDefinition:
 
         self.pin_rot_shift = pin_rot_shift
 
-        self.pin_names = self._build_pin_names(zif_map, in_pins, io_pins, o_pins, clk_pins, q_pins, oe_l_pins, oe_h_pins)
+        self.pin_names = self._build_pin_names(zif_map, in_pins, io_pins, o_pins, clk_pins, q_pins, oe_l_pins, oe_h_pins, pin_names_override)
 
         # Check the package
         tot_pins: int = sum(self.pins_per_side)
