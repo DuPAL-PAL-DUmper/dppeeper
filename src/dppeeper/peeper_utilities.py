@@ -4,7 +4,6 @@ from typing import final
 
 from serial.tools.list_ports import comports
 
-
 @final
 class PeeperUtilities:
     """

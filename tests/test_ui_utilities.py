@@ -3,7 +3,6 @@
 # pylint: disable=wrong-import-position,wrong-import-order
 
 import sys
-from typing import Type
 
 import pytest
 

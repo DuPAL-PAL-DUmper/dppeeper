@@ -3,8 +3,6 @@
 from enum import Enum
 from typing import final, Tuple
 
-from dppeeper.ic.ic_definition import ICDefinition
-
 class UIPinGridType(Enum):
     PIN_NUM = 0
     CHECKBOX = 1

@@ -18,12 +18,12 @@ from dupicolib.board_command_class_factory import BoardCommandClassFactory
 from dupicolib.board_utilities import BoardUtilities
 from dupicolib.board_fw_version import FwVersionTools, FWVersionDict
 
+from dpanalib.ic.ic_definition import ICDefinition
+from dpanalib.ic.ic_loader import ICLoader
+
 from dppeeper import __name__, __version__
 
 from dppeeper.peeper_utilities import PeeperUtilities
-from dppeeper.ic.ic_definition import ICDefinition
-from dppeeper.ic.ic_loader import ICLoader
-
 from dppeeper.ui.main_window import MainWin
 
 MIN_SUPPORTED_MODEL: int = 3

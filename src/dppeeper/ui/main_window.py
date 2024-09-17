@@ -9,9 +9,10 @@ from tkinter.ttk import Frame, Checkbutton, Label, Button
 
 import serial
 
-from dppeeper.ic.ic_definition import ICDefinition
-from dppeeper.ui.ui_utilities import UIUtilities, UIPinGridType
+from dpanalib.ic.ic_definition import ICDefinition
 from dupicolib.board_commands_interface import BoardCommandsInterface
+
+from dppeeper.ui.ui_utilities import UIUtilities, UIPinGridType
 
 class MainWin(Frame):
     _ic_definition: ICDefinition

@@ -1,6 +1,13 @@
 # Changelog
 Changelog for the dppeeper utility
 
+## [0.0.8] - 2024-09-17
+### Changed
+- Depends on dpanalib >= 0.0.1
+
+### Removed
+- Example files are moved to dpanalib
+
 ## [0.0.7] - 2024-08-25
 ### Added
 - Allow the TOML to specify pin naming override with the `names_override` optional entry
